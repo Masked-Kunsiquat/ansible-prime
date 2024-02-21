@@ -1,0 +1,22 @@
+# Ignore compiled Python files
+*.pyc
+
+# Ignore Ansible vault passwords
+vault_password_file
+
+# Ignore generated files
+ansible.cfg
+
+# Ignore logs
+*.log
+
+# Ignore temporary files
+*.retry
+
+# Ignore virtual environments
+venv/
+.venv/
+
+# Ignore system-specific files
+*.DS_Store
+Thumbs.db
