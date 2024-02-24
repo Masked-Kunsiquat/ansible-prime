@@ -6,10 +6,6 @@
       ansible.builtin.apk:
         name: shadow
         state: present
-    - name: Install openssl package
-      ansible.builtin.apk:
-        name: openssl
-        state: present
     - name: Install sudo package
       ansible.builtin.apk:
         name: sudo
