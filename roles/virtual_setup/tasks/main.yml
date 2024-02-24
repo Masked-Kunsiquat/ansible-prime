@@ -1,4 +1,4 @@
-# tasks/main.yml
+# roles/virtual_setup/tasks/main.yml
 - name: Update repositories
   ansible.builtin.include_tasks: update-repo.yml
 
