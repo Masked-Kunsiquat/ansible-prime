@@ -1,0 +1,60 @@
+# tasks/create-user_alpine.yml (Alpine Linux)
+- name: Install requried packages, if needed
+  ansible.builtin.include_tasks: packages_alpine.yml
+  
+# This block manages the creation and configuration of the new user.
+- name: Create {{ newadmin_username }}
+  block:
+  # This task creates the new user without a password
+  - name: Create {{ newadmin_username }} user without password
+    ansible.builtin.user:
+      name: "{{ newadmin_username }}"
+      groups: wheel
+      append: true
+      state: present
+      createhome: true
+
+  - name: Configure sudoers file
+    ansible.builtin.blockinfile:
+      path: /etc/sudoers
+      block: |
+        %wheel ALL=(ALL) NOPASSWD: ALL
+      create: yes
+      state: present
+      marker: "# {mark} ANSIBLE MANAGED BLOCK -- DO NOT EDIT BELOW THIS LINE"
+
+  - name: Ensure {{ newadmin_username }} is added to the wheel group
+    ansible.builtin.user:
+      name: "{{ newadmin_username }}"
+      groups: wheel
+      append: true
+
+# Generates a random password for the new user only if the username has changed.
+  - name: Password generation
+    block:
+      - name: Create .passwd directory for {{ newadmin_username }}, if it does not exist
+        ansible.builtin.file:
+          path: "{{ newadmin_passwd_directory }}"
+          state: directory
+          mode: '0700'
+          owner: "{{ newadmin_username }}"
+          group: "{{ newadmin_username }}"
+          become: true
+          become_user: root
+
+      - name: Generate random password
+        set_fact:
+          random_password: "{{ lookup('password', '/dev/null length=45 chars=ascii_letters,digits') }}"
+
+      - name: Save the password to a file
+        ansible.builtin.blockinfile:
+          path: "{{ newadmin_passwd_directory }}/pass.txt"
+          block: " {{ random_password }}"
+          mode: '0600'
+    when: newadmin_username is changed
+
+  - name: Set password for {{ newadmin_username }} using password file
+    ansible.builtin.user:
+      name: "{{ newadmin_username }}"
+      password: "{{ lookup('file', newadmin_password_file) }}"
+    when: newadmin_username is changed

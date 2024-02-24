@@ -1,4 +1,4 @@
-# tasks/create-user.yml
+# tasks/create-user_deb-ubu.yml (Debian/Ubuntu)
 - name: Create {{ newadmin_username }} user without password
   user:
     name: "{{ newadmin_username }}"
