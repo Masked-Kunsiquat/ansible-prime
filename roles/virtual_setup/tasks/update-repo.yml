@@ -1,9 +1,6 @@
----
+# tasks/update-repo.yml
 - name: Update packages on LXCs and VMs
-  hosts: LXCs:VMs:machines  # Combine hosts from both playbooks
-  gather_facts: true
-  become: true  # Enable privilege escalation (sudo)
-  tasks:
+  block:
     - name: Update apt packages on LXCs (for Debian/Ubuntu)
       ansible.builtin.apt:
         update_cache: true

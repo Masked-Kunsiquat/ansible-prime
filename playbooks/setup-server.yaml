@@ -1,0 +1,9 @@
+- name: Add new Admin user to server and enable desired SSH configs
+  hosts: [desired-hosts]
+  become: true
+  roles:
+    - virtual_setup
+  vars:
+    newadmin_username: [new-user]
+    newadmin_password_file: [new_user-passwd-file]
+      # Default is: 

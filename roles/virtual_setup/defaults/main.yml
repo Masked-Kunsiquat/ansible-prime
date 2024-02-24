@@ -1,0 +1,6 @@
+# defaults/main.yml
+
+# Username of new admin
+newadmin_username: serveradmin
+# New directory to store admin's passwd for creation
+newadmin_passwd_directory: "/home/{{ newadmin_username }}/.passwd"
