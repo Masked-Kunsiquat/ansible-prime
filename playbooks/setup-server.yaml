@@ -6,4 +6,3 @@
   vars:
     newadmin_username: [new-user]
     newadmin_password_file: [new_user-passwd-file]
-      # Default is: 
