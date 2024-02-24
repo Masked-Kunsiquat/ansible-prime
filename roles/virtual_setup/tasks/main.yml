@@ -1,4 +1,7 @@
 # tasks/main.yml
+- name: Update repositories
+  ansible.builtin.include_tasks: update-repo.yml
+
 - name: Create new admin user with sudo privileges
   ansible.builtin.include_tasks: create-user.yml
 
@@ -9,7 +12,6 @@
 
     - name: Edit SSH configuration file
       ansible.legacy.include_tasks: ssh-config.yml
-
 
 - name: Update repositories
   ansible.builtin.include_tasks: update-repo.yml
