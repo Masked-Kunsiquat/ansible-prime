@@ -16,8 +16,6 @@
         mode: '0700'
         owner: "{{ newadmin_username }}"
         group: "{{ newadmin_username }}"
-        become: true
-        become_user: root
 
     - name: Generate random password
       set_fact:
@@ -28,10 +26,10 @@
         path: "{{ newadmin_passwd_directory }}/pass.txt"
         block: " {{ random_password }}"
         mode: '0600'
-  when: newadmin_username is changed
+#  when: newadmin_username is changed
 
 - name: Set password for {{ newadmin_username }} using password file
   ansible.builtin.user:
     name: "{{ newadmin_username }}"
     password: "{{ lookup('file', newadmin_password_file) }}"
-  when: newadmin_username is changed
+#  when: newadmin_username is changed
