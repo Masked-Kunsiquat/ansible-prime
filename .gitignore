@@ -20,3 +20,4 @@ venv/
 # Ignore system-specific files
 *.DS_Store
 Thumbs.db
+roles/virtual_setup/defaults/main.yml

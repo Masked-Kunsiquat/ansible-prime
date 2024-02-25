@@ -28,7 +28,7 @@
       ansible.builtin.blockinfile:
         path: "{{ newadmin_passwd_directory }}/pass.txt"
         block: " {{ random_password }}"
-        mode: '0600'
+        mode: '0640'
         create: yes
 #  when: newadmin_username is changed
 
