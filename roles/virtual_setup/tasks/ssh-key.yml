@@ -1,0 +1,18 @@
+- name: Update authorized_keys file
+  block:
+
+    - name: Ensure authorized_keys file exists
+      ansible.builtin.file:
+        path: "{{ newadmin_base_directory }}/.ssh/authorized_keys"
+        state: touch
+        owner: "{{ newadmin_username }}"
+        group: "{{ newadmin_username }}"
+        mode: '0600'
+    
+    - name: Add SSH public key to authorized_keys file
+      ansible.builtin.template:
+        src: authorized_keys.j2
+        dest: "{{ newadmin_base_directory }}/.ssh/authorized_keys"
+        owner: "{{ newadmin_username }}"
+        group: "{{ newadmin_username }}"
+        mode: '0600'

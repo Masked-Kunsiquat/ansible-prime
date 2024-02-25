@@ -1,6 +1,27 @@
 # defaults/main.yml
+#  _   _                  ____             __ _       
+# | | | |___  ___ _ __   / ___|___  _ __  / _(_) __ _ 
+# | | | / __|/ _ \ '__| | |   / _ \| '_ \| |_| |/ _` |
+# | |_| \__ \  __/ |    | |__| (_) | | | |  _| | (_| |
+#  \___/|___/\___|_|     \____\___/|_| |_|_| |_|\__, |
+#                                               |___/ 
 
 # Username of new admin
 newadmin_username: serveradmin
-# New directory to store admin's passwd for creation
-newadmin_passwd_directory: "/home/{{ newadmin_username }}/.passwd"
+newadmin_base_directory: "/home/{{ newadmin_username }}"
+newadmin_passwd_directory: "{{ newadmin_base_directory }}/.passwd"
+
+#  ____ ____  _   _    ____             __ _       
+# / ___/ ___|| | | |  / ___|___  _ __  / _(_) __ _ 
+# \___ \___ \| |_| | | |   / _ \| '_ \| |_| |/ _` |
+#  ___) |__) |  _  | | |__| (_) | | | |  _| | (_| |
+# |____/____/|_| |_|  \____\___/|_| |_|_| |_|\__, |
+#                                            |___/ 
+
+newadmin_ssh_pub_key: ""
+# If you need to include multiple SSH-keys, add them to the list.
+additional_ssh_keys:
+#  - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD...."
+  - ""
+  - ""
+  - ""
