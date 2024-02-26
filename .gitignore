@@ -20,6 +20,10 @@ venv/
 # Ignore system-specific files
 *.DS_Store
 Thumbs.db
-roles/virtual_setup/defaults/main.yml
-defaults/main.yml
+
+# Ignore default main.yml from each role (ONE-levels deep)
+roles/*/defaults/main.yml
+# Ignore default main.yml from each role (TWO-levels deep)
+roles/*/*/defaults/main.yml
+
 
