@@ -1,38 +1,30 @@
-Role Name
-=========
+# Webtrees Ansible Role
 
-A brief description of the role goes here.
+This Ansible role automates the installation and configuration of Webtrees, a web-based genealogy application.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role assumes you have a Debian-based system with Apache and MySQL/MariaDB already installed. Additionally, ensure that PHP is set up and configured properly for Webtrees.
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The following variables can be customized:
 
-Dependencies
-------------
+- `php_version`: The major version of PHP to use (default is 7).
+- `webtrees_version`: The version of Webtrees to install (default is "2.1.18").
+- `webtrees_install_dir`: The directory where Webtrees will be installed (default is "/var/www/webtrees").
+- `mysql_database`: The MySQL/MariaDB database name for Webtrees (default is "webtrees_db").
+- `mysql_username`: The MySQL/MariaDB username for Webtrees (default is "webtrees_user").
+- `mysql_password`: The MySQL/MariaDB password for Webtrees (default is "your_password").
+- `mysql_host`: The MySQL/MariaDB host (default is "localhost").
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Dependencies
 
-Example Playbook
-----------------
+No dependencies.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Example Playbook
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+- hosts: servers
+  roles:
+    - { role: webtrees, php_version: 7, webtrees_version: "2.1.18", mysql_password: "password123" }
