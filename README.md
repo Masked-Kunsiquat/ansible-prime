@@ -3,7 +3,7 @@ This repository contains Ansible roles for setting up various applications and c
 
 ## Roles Available
 
-### [docker-radarr](./apps/docker-radarr/README.md)
+### [docker-radarr](.roles/apps/docker-radarr/README.md)
 
 This role installs and configures Radarr, a movie management application for Docker.
 
