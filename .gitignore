@@ -27,3 +27,6 @@ roles/*/defaults/main.yml
 roles/*/*/defaults/main.yml
 
 
+prox-inventory
+proxmox.yml
+proxmox.yml.bk
