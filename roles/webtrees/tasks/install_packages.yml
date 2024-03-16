@@ -1,0 +1,21 @@
+# tasks/install_packages.yml
+---
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - unzip
+    - apache2
+    - libapache2-mod-php
+    - php
+    - php-cli
+    - php-mysql
+    - php-zip
+    - php-gd
+    - php-intl
+    - php-imagick
+    - mariadb-client
+    - patch
+    - mysql-client
