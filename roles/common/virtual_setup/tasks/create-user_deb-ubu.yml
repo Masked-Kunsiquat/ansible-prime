@@ -1,3 +1,4 @@
+---
 # tasks/create-user_deb-ubu.yml (Debian/Ubuntu)
 - name: Install requried packages, if needed
   ansible.builtin.include_tasks: packages_deb-ubu.yml
@@ -16,7 +17,7 @@
       ansible.builtin.file:
         path: "{{ newadmin_passwd_directory }}"
         state: directory
-        mode: '0700'
+        mode: "0700"
         owner: "{{ newadmin_username }}"
         group: "{{ newadmin_username }}"
 
@@ -28,8 +29,8 @@
       ansible.builtin.blockinfile:
         path: "{{ newadmin_passwd_directory }}/pass.txt"
         block: " {{ random_password }}"
-        mode: '0640'
-        create: yes
+        mode: "0640"
+        create: true
 #  when: newadmin_username is changed
 
 - name: Set password for {{ newadmin_username }}

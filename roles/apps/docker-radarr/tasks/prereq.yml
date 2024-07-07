@@ -1,3 +1,4 @@
+---
 - name: Ensure application directories are present
   block:
     - name: Ensure docker data directory is present
@@ -6,20 +7,19 @@
         state: directory
         owner: "{{ user }}"
         group: "{{ user }}"
-        mode: '0755'
-#      when: not docker_dir is exists
+        mode: "0755"
+    #      when: not docker_dir is exists
 
     - name: Ensure application directories are present
       block:
-
         - name: Ensure {{ service_name }}-1 directory is present
           ansible.builtin.file:
             path: "{{ radarr1_dir }}"
             state: directory
             owner: "{{ user }}"
             group: "{{ user }}"
-            mode: '0755'
-#          notify: restart Radarr1 containers
+            mode: "0755"
+        #          notify: restart Radarr1 containers
 
         - name: Ensure {{ service_name }}-2 directory is present
           ansible.builtin.file:
@@ -27,5 +27,5 @@
             state: directory
             owner: "{{ user }}"
             group: "{{ user }}"
-            mode: '0755'
+            mode: "0755"
 #          notify: restart Radarr2 containers

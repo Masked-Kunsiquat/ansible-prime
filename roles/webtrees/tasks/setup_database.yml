@@ -1,12 +1,12 @@
 # tasks/setup_database.yml
 ---
 - name: Create MySQL database
-  mysql_db:
+  community.mysql.mysql_db:
     name: "{{ mysql_database }}"
     state: present
 
 - name: Create MySQL user
-  mysql_user:
+  community.mysql.mysql_user:
     name: "{{ mysql_username }}"
     password: "{{ mysql_password }}"
     host: "{{ mysql_host }}"

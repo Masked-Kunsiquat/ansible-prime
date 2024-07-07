@@ -1,33 +1,34 @@
+---
 - name: Create Radarr containers
   block:
-  - name: Create Radarr-1 container.
-    community.docker.docker_container:
-      name: radarr
-      image: lscr.io/linuxserver/radarr:latest
-      pull: true
-      state: started
-      restart_policy: unless-stopped
-      env:
-        PUID: "{{ radarr1_puid }}"
-        PGID: "{{ radarr1_pgid }}"
-        TZ: "{{ radarr_timezone }}"
-        DOCKER_MODS:
-      volumes:
-        - "{{ radarr1_dir }}/config:/config"
-        - "{{ data_dir }}:/data"
-    
-  - name: Create Radarr-2 container
-    community.docker.docker_container:
-      name: radarr2
-      image: lscr.io/linuxserver/radarr:latest
-      pull: true
-      state: started
-      restart_policy: unless-stopped
-      env:
-        PUID: "{{ radarr2_puid }}"
-        PGID: "{{ radarr2_pgid }}"
-        TZ: "{{ radarr_timezone }}"
-        DOCKER_MODS:
-      volumes:
-        - "{{ radarr2_dir }}/config:/config"
-        - "{{ data_dir }}:/data"
+    - name: Create Radarr-1 container.
+      community.docker.docker_container:
+        name: radarr
+        image: lscr.io/linuxserver/radarr:latest
+        pull: true
+        state: started
+        restart_policy: unless-stopped
+        env:
+          PUID: "{{ radarr1_puid }}"
+          PGID: "{{ radarr1_pgid }}"
+          TZ: "{{ radarr_timezone }}"
+          DOCKER_MODS:
+        volumes:
+          - "{{ radarr1_dir }}/config:/config"
+          - "{{ data_dir }}:/data"
+
+    - name: Create Radarr-2 container
+      community.docker.docker_container:
+        name: radarr2
+        image: lscr.io/linuxserver/radarr:latest
+        pull: true
+        state: started
+        restart_policy: unless-stopped
+        env:
+          PUID: "{{ radarr2_puid }}"
+          PGID: "{{ radarr2_pgid }}"
+          TZ: "{{ radarr_timezone }}"
+          DOCKER_MODS:
+        volumes:
+          - "{{ radarr2_dir }}/config:/config"
+          - "{{ data_dir }}:/data"

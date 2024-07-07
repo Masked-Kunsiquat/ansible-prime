@@ -1,3 +1,4 @@
+---
 # tasks/update-repo.yml
 - name: Update packages on LXCs and VMs
   block:

@@ -4,4 +4,3 @@
   community.docker.docker_container:
     name: radarr
     state: restarted
-  
