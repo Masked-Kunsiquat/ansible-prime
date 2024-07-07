@@ -1,16 +1,17 @@
+---
 # roles/virtual_setup/tasks/main.yml
 - name: Update repositories
   ansible.builtin.include_tasks: update-repo.yml
 
 - name: Create the new user with sudo privileges
   block:
-  - name: Create new admin user with sudo privileges (Debian/Ubuntu)
-    ansible.builtin.include_tasks: create-user_deb-ubu.yml
-    when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
+    - name: Create new admin user with sudo privileges (Debian/Ubuntu)
+      ansible.builtin.include_tasks: create-user_deb-ubu.yml
+      when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
 
-  - name: Create a new admin user with sudo privileges (Alpine)
-    ansible.builtin.include_tasks: create-user_alpine.yml
-    when: ansible_os_family == 'Alpine'
+    - name: Create a new admin user with sudo privileges (Alpine)
+      ansible.builtin.include_tasks: create-user_alpine.yml
+      when: ansible_os_family == 'Alpine'
 
 - name: Edit SSH configurations
   block:

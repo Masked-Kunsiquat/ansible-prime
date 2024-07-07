@@ -1,3 +1,4 @@
+---
 #playbooks/setup-server.yaml
 - name: Add new Admin user to server and enable desired SSH configs
   hosts: debian-test

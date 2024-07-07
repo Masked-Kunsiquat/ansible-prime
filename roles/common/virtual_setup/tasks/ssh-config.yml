@@ -1,3 +1,4 @@
+---
 - name: Enable SSH key-based authentification
   template:
     src: sshd_config.j2

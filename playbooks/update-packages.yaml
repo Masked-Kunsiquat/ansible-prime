@@ -1,8 +1,8 @@
 ---
 - name: Update packages on LXCs and VMs
-  hosts: LXCs:VMs:machines  # Combine hosts from both playbooks
+  hosts: LXCs:VMs:machines # Combine hosts from both playbooks
   gather_facts: true
-  become: true  # Enable privilege escalation (sudo)
+  become: true # Enable privilege escalation (sudo)
   tasks:
     - name: Update apt packages on LXCs (for Debian/Ubuntu)
       ansible.builtin.apt:
@@ -12,11 +12,11 @@
       when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
 
     - name: Update apk packages on VMs (for Alpine Linux)
-      ansible.builtin.apk:
-        update_cache: true
       become: true
       become_user: root
       when: ansible_os_family == 'Alpine'
+      community.general.apk:
+        update_cache: true
 
     - name: Update apt packages on VMs (for Debian-based systems)
       ansible.builtin.apt:

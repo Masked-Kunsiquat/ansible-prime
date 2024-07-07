@@ -1,27 +1,27 @@
 # tasks/configure_apache.yml
 ---
 - name: Enable Apache modules
-  apache2_module:
-    name: "{{ item }}"
-    state: present
   loop:
     - rewrite
     - ssl
+  community.general.apache2_module:
+    name: "{{ item }}"
+    state: present
 
-# Configure Apache virtual host for webtrees
 - name: Configure Apache virtual host for webtrees
-  template:
+  ansible.builtin.template:
     src: webtrees.conf.j2
-    dest: "/etc/apache2/sites-available/webtrees.conf"
+    dest: /etc/apache2/sites-available/webtrees.conf
 
 - name: Enable webtrees virtual host
-  file:
-    src: "/etc/apache2/sites-available/webtrees.conf"
-    dest: "/etc/apache2/sites-enabled/webtrees.conf"
+  ansible.builtin.file:
+    src: /etc/apache2/sites-available/webtrees.conf
+    dest: /etc/apache2/sites-enabled/webtrees.conf
     state: link
 
 # Restart Apache
+
 - name: Restart Apache
-  service:
+  ansible.builtin.service:
     name: apache2
     state: restarted
