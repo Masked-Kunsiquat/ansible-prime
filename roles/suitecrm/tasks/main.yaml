@@ -1,54 +1,56 @@
 ---
 - name: Install necessary packages for webserver and database
   ansible.builtin.apt:
-    name: "{{ item }}"
+    name:
+      - apache2
+      - unzip
+      - wget
+      - php{{ suitecrm_php_version }}
+      - php{{ suitecrm_php_version }}-cli
+      - php{{ suitecrm_php_version }}-fpm
+      - php{{ suitecrm_php_version }}-mysql
+      - php{{ suitecrm_php_version }}-curl
+      - php{{ suitecrm_php_version }}-xml
+      - php{{ suitecrm_php_version }}-mbstring
+      - php{{ suitecrm_php_version }}-zip
+      - php{{ suitecrm_php_version }}-gd
+      - php{{ suitecrm_php_version }}-imap
+      - php{{ suitecrm_php_version }}-intl
+      - php{{ suitecrm_php_version }}-soap
+      - libapache2-mod-php
+      - mysql-server
+      - python3-mysqldb
     state: present
-  loop:
-    - apache2
-    - unzip
-    - wget
-    - "php{{ suitecrm_php_version }}"
-    - "php{{ suitecrm_php_version }}-cli"
-    - "php{{ suitecrm_php_version }}-fpm"
-    - "php{{ suitecrm_php_version }}-mysql"
-    - "php{{ suitecrm_php_version }}-curl"
-    - "php{{ suitecrm_php_version }}-xml"
-    - "php{{ suitecrm_php_version }}-mbstring"
-    - "php{{ suitecrm_php_version }}-zip"
-    - "php{{ suitecrm_php_version }}-gd"
-    - "php{{ suitecrm_php_version }}-imap"
-    - "php{{ suitecrm_php_version }}-intl"
-    - "php{{ suitecrm_php_version }}-soap"
-    - libapache2-mod-php
-    - mysql-server
-    - python3-mysqldb
   register: apt_install
   failed_when: apt_install.failed
 
 - name: Conigure PHP settings
   block:
-  - name: Configure PHP for CLI
-    ansible.builtin.ini_file:
-      dest: "/etc/php/{{ suitecrm_php_version }}/cli/php.ini"
-      section: 'PHP'
-      option: "{{ item.option }}"
-      value: "{{ item.value }}"
-      state: present
-    loop:
-      - { option: 'upload_max_filesize', value: '6M' }
-      - { option: 'post_max_size', value: '6M' }
+    - name: Configure PHP for CLI
+      loop:
+        - option: upload_max_filesize
+          value: 6M
+        - option: post_max_size
+          value: 6M
+      community.general.ini_file:
+        dest: /etc/php/{{ suitecrm_php_version }}/cli/php.ini
+        section: PHP
+        option: "{{ item.option }}"
+        value: "{{ item.value }}"
+        state: present
 
-  - name: Update PHP settings for Apache2
-    ansible.builtin.ini_file:
-      dest: "/etc/php/{{ suitecrm_php_version }}/apache2/php.ini"
-      section: 'PHP'
-      option: "{{ item.option }}"
-      value: "{{ item.value }}"
-      state: present
-    loop:
-      - { option: 'upload_max_filesize', value: '6M' }
-      - { option: 'post_max_size', value: '6M' }
-
+    - name: Update PHP settings for Apache2
+      loop:
+        - option: upload_max_filesize
+          value: 6M
+        - option: post_max_size
+          value: 6M
+      community.general.ini_file:
+        dest: /etc/php/{{ suitecrm_php_version }}/apache2/php.ini
+        section: PHP
+        option: "{{ item.option }}"
+        value: "{{ item.value }}"
+        state: present
 
 - name: Start and enable Apache
   ansible.builtin.service:
@@ -68,52 +70,52 @@
   failed_when: mysql_service.state != 'started'
 
 - name: Set MySQL root password
-  ansible.builtin.mysql_user:
+  loop:
+    - localhost
+    - 127.0.0.1
+    - ::1
+  register: set_root_password
+  failed_when: set_root_password.failed
+  community.mysql.mysql_user:
     name: root
     host: "{{ item }}"
     password: "{{ suitecrm_db_root_password }}"
     state: present
     login_user: root
     login_password: "{{ suitecrm_db_root_password }}"
-  loop:
-    - 'localhost'
-    - '127.0.0.1'
-    - '::1'
-  register: set_root_password
-  failed_when: set_root_password.failed
 
 - name: Remove anonymous MySQL users
-  ansible.builtin.mysql_user:
-    name: ''
+  register: remove_anonymous_users
+  failed_when: remove_anonymous_users.failed
+  community.mysql.mysql_user:
+    name: ""
     host_all: true
     state: absent
     login_user: root
     login_password: "{{ suitecrm_db_root_password }}"
-  register: remove_anonymous_users
-  failed_when: remove_anonymous_users.failed
 
 - name: Disallow root login remotely
-  ansible.builtin.mysql_user:
+  loop:
+    - 127.0.0.1
+    - ::1
+  register: disallow_remote_root
+  failed_when: disallow_remote_root.failed
+  community.mysql.mysql_user:
     name: root
     host: "{{ item }}"
     password: "{{ suitecrm_db_root_password }}"
     state: present
     login_user: root
     login_password: "{{ suitecrm_db_root_password }}"
-  loop:
-    - '127.0.0.1'
-    - '::1'
-  register: disallow_remote_root
-  failed_when: disallow_remote_root.failed
 
 - name: Remove MySQL test database
-  ansible.builtin.mysql_db:
+  register: remove_test_db
+  failed_when: remove_test_db.failed
+  community.mysql.mysql_db:
     name: test
     state: absent
     login_user: root
     login_password: "{{ suitecrm_db_root_password }}"
-  register: remove_test_db
-  failed_when: remove_test_db.failed
 
 - name: Reload privilege tables
   ansible.builtin.command:
@@ -123,24 +125,24 @@
   failed_when: reload_privileges.failed
 
 - name: Create MySQL database
-  ansible.builtin.mysql_db:
+  register: create_db
+  failed_when: create_db.failed
+  community.mysql.mysql_db:
     name: "{{ suitecrm_db_name }}"
     state: present
     login_user: root
     login_password: "{{ suitecrm_db_root_password }}"
-  register: create_db
-  failed_when: create_db.failed
 
 - name: Create MySQL user
-  ansible.builtin.mysql_user:
+  register: create_user
+  failed_when: create_user.failed
+  community.mysql.mysql_user:
     name: "{{ suitecrm_db_user }}"
     password: "{{ suitecrm_db_password }}"
     priv: "{{ suitecrm_db_name }}.*:ALL"
     state: present
     login_user: root
     login_password: "{{ suitecrm_db_root_password }}"
-  register: create_user
-  failed_when: create_user.failed
 
 - name: Download SuiteCRM package
   ansible.builtin.get_url:
@@ -151,7 +153,7 @@
 
 - name: Unzip SuiteCRM package
   ansible.builtin.command:
-    cmd: "unzip -o /tmp/suitecrm.zip -d /tmp/SuiteCRM"
+    cmd: unzip -o /tmp/suitecrm.zip -d /tmp/SuiteCRM
   register: unzip_suitecrm
   failed_when: unzip_suitecrm.failed
 
@@ -165,19 +167,19 @@
 
 - name: Set directory permissions in bulk
   ansible.builtin.command:
-    cmd: "find {{ suitecrm_web_root }} -type d -exec chmod 2755 {} +"
+    cmd: find {{ suitecrm_web_root }} -type d -exec chmod 2755 {} +
   register: dir_permissions
   failed_when: dir_permissions.failed
 
 - name: Set file permissions in bulk
   ansible.builtin.command:
-    cmd: "find {{ suitecrm_web_root }} -type f -exec chmod 0644 {} +"
+    cmd: find {{ suitecrm_web_root }} -type f -exec chmod 0644 {} +
   register: file_permissions
   failed_when: file_permissions.failed
 
 - name: Change ownerships to webserver user
   ansible.builtin.command:
-    cmd: "chown -R {{ suitecrm_web_user }}:{{ suitecrm_web_group }} {{ suitecrm_web_root }}"
+    cmd: chown -R {{ suitecrm_web_user }}:{{ suitecrm_web_group }} {{ suitecrm_web_root }}
   register: change_ownership
   failed_when: change_ownership.failed
 
@@ -198,21 +200,21 @@
 
 - name: Enable Apache site
   ansible.builtin.command:
-    cmd: "a2ensite suitecrm.conf"
+    cmd: a2ensite suitecrm.conf
   register: enable_site
   failed_when: enable_site.rc != 0
   notify: Restart Apache
 
 - name: Disable default Apache site
   ansible.builtin.command:
-    cmd: "a2dissite 000-default.conf"
+    cmd: a2dissite 000-default.conf
   register: disable_default_site
   failed_when: disable_default_site.rc != 0
   notify: Restart Apache
 
 - name: Enable mod_rewrite
   ansible.builtin.command:
-    cmd: "a2enmod rewrite"
+    cmd: a2enmod rewrite
   register: enable_mod_rewrite
   failed_when: enable_mod_rewrite.rc != 0
   notify: Restart Apache
@@ -226,7 +228,7 @@
 
 - name: Run UI installer (optional)
   ansible.builtin.debug:
-    msg: "Please complete the installation via the webUI at your server's address."
+    msg: Please complete the installation via the webUI at your server's address.
   when: not run_cli_installer | default(false)
 
 - name: Clean up mess
