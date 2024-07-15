@@ -8,9 +8,9 @@
      - `upload_max_filesize = 6M`
      - `post_max_size = 6M`
 
-2. **Ensure Required PHP Packages are Installed:**
-   - Install necessary PHP packages:
-     - `php8.1-cli`, `php8.1-fpm`, `php8.1-mysql`, `php8.1-curl`, `php8.1-xml`, `php8.1-mbstring`, `php8.1-zip`, `php8.1-gd`, `php8.1-imap`, `php8.1-intl`, `php8.1-soap`
+~~2. **Ensure Required PHP Packages are Installed:**~~
+  ~~- Install necessary PHP packages:~~
+     ~~- `php8.1-cli`, `php8.1-fpm`, `php8.1-mysql`, `php8.1-curl`, `php8.1-xml`, `php8.1-mbstring`, `php8.1-zip`, `php8.1-gd`, `php8.1-imap`, `php8.1-intl`, `php8.1-soap`~~
 
 3. **Reset Permissions After Running CLI Installer:**
    - Adjust permissions for SuiteCRM files and directories:
@@ -21,9 +21,9 @@
      chmod +x bin/console
      ```
 
-4. **Use Placeholders in `defaults/main.yaml`:**
-   - Implement placeholders for sensitive data and use playbook variables:
-     - Ensure variables are set in the playbook to avoid leaking secrets on GitHub or other platforms.
+~~4. **Use Placeholders in `defaults/main.yaml`:**~~
+    ~~- Implement placeholders for sensitive data and use playbook variables:~~
+    ~~- Ensure variables are set in the playbook to avoid leaking secrets on GitHub or other platforms.~~
 
 5. **Testing and Validation:**
    - Test the Ansible role thoroughly to verify correct configuration and installation of SuiteCRM.
