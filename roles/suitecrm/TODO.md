@@ -2,11 +2,11 @@
 
 ~~1. **Configure PHP Settings:**~~
    ~~- Update `php.ini` files:~~
-     - `/etc/php/8.1/cli/php.ini`
-     - `/etc/php/8.1/apache2/php.ini`
+     ~~- `/etc/php/8.1/cli/php.ini`~~
+     ~~- `/etc/php/8.1/apache2/php.ini`~~
    ~~- Set:~~
-     - `upload_max_filesize = 6M`
-     - `post_max_size = 6M`
+     ~~- `upload_max_filesize = 6M`~~
+     ~~- `post_max_size = 6M`~~
 
 ~~2. **Ensure Required PHP Packages are Installed:**~~
   ~~- Install necessary PHP packages:~~
