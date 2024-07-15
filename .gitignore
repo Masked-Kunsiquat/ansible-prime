@@ -25,7 +25,7 @@ Thumbs.db
 roles/*/defaults/main.yml
 # Ignore default main.yml from each role (TWO-levels deep)
 roles/*/*/defaults/main.yml
-
+*-secure-*.yaml
 
 prox-inventory
 proxmox.yml
