@@ -7,12 +7,21 @@
     - apache2
     - unzip
     - wget
-    - php
-    - php-mysql
+    - "php{{ suitecrm_php_version }}"
+    - "php{{ suitecrm_php_version }}-cli"
+    - "php{{ suitecrm_php_version }}-fpm"
+    - "php{{ suitecrm_php_version }}-mysql"
+    - "php{{ suitecrm_php_version }}-curl"
+    - "php{{ suitecrm_php_version }}-xml"
+    - "php{{ suitecrm_php_version }}-mbstring"
+    - "php{{ suitecrm_php_version }}-zip"
+    - "php{{ suitecrm_php_version }}-gd"
+    - "php{{ suitecrm_php_version }}-imap"
+    - "php{{ suitecrm_php_version }}-intl"
+    - "php{{ suitecrm_php_version }}-soap"
     - libapache2-mod-php
     - mysql-server
     - python3-mysqldb
-    - php-xml
   register: apt_install
   failed_when: apt_install.failed
 
