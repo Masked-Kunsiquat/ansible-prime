@@ -20,13 +20,13 @@
   register: copy_files
   failed_when: copy_files.failed
 
-- name: Set directory permissions in bulk
+- name: Set initial directory permissions in bulk
   ansible.builtin.command:
     cmd: find {{ suitecrm_web_root }} -type d -exec chmod 2755 {} +
   register: dir_permissions
   failed_when: dir_permissions.failed
 
-- name: Set file permissions in bulk
+- name: Set initial file permissions in bulk
   ansible.builtin.command:
     cmd: find {{ suitecrm_web_root }} -type f -exec chmod 0644 {} +
   register: file_permissions
@@ -47,11 +47,11 @@
 
 - name: Run CLI installer (optional)
   ansible.builtin.command:
-    cmd: "{{ suitecrm_web_root }}/bin/console suitecrm:app:install -u '{{ suitecrm_web_user }}' -p '{{ suitecrm_web_user_password }}' -U '{{ suitecrm_db_user }}'
-      -P {{ suitecrm_db_password }} -H '127.0.0.1' -N '{{ suitecrm_db_name }}' -S '{{ suitecrm_server_name }}' -d 'no'"
+    cmd: "{{ suitecrm_web_root }}/bin/console suitecrm:app:install -u '{{ suitecrm_web_user }}' -p '{{ suitecrm_web_user_password }}' -U '{{ suitecrm_db_user }}' -P {{ suitecrm_db_password }} -H '127.0.0.1' -N '{{ suitecrm_db_name }}' -S '{{ suitecrm_server_name }}' -d 'no'"
   when: run_cli_installer | default(false)
   register: run_cli_installer_cmd
   failed_when: run_cli_installer_cmd.failed
+  notify: Reset SuiteCRM permissions
 
 - name: Run UI installer (optional)
   ansible.builtin.debug:

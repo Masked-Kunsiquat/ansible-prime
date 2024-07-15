@@ -11,3 +11,4 @@
     suitecrm_db_root_password: ""
     suitecrm_server_name: ""
     suitecrm_run_cli_installer: ""
+    suitcrm_php_version: ""

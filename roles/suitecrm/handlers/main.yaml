@@ -4,3 +4,29 @@
   ansible.builtin.service:
     name: apache2
     state: restarted
+
+- name: Reset SuiteCRM permissions
+  block:
+    - name: Adjust directory permissions
+      ansible.builtin.command:
+        cmd: find {{ suitecrm_web_root }} -type d -not -perm 2755 -exec chmod 2755 {} +
+      register: dir_permissions_reset
+      failed_when: dir_permissions_reset.failed
+
+    - name: Adjust file permissions
+      ansible.builtin.command:
+        cmd: find {{ suitecrm_web_root }} -type f -not -perm 0644 -exec chmod 0644 {} +
+      register: file_permissions_reset
+      failed_when: file_permissions_reset.failed
+
+    - name: Change ownerships to webserver user
+      ansible.builtin.command:
+        cmd: find {{ suitecrm_web_root }} ! -user {{ suitecrm_web_user }} -exec chown {{ suitecrm_web_user }}:{{ suitecrm_web_group }} {} +
+      register: change_ownership_reset
+      failed_when: change_ownership_reset.failed
+
+    - name: Make console executable
+      ansible.builtin.command:
+        cmd: chmod +x {{ suitecrm_web_root }}/bin/console
+      register: make_console_exec_reset
+      failed_when: make_console_exec_reset.failed
