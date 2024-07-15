@@ -1,10 +1,10 @@
 ## SuiteCRM Ansible Role To-Do List
 
-1. **Configure PHP Settings:**
-   - Update `php.ini` files:
+~~1. **Configure PHP Settings:**~~
+   ~~- Update `php.ini` files:~~
      - `/etc/php/8.1/cli/php.ini`
      - `/etc/php/8.1/apache2/php.ini`
-   - Set:
+   ~~- Set:~~
      - `upload_max_filesize = 6M`
      - `post_max_size = 6M`
 
