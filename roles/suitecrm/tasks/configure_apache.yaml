@@ -1,0 +1,38 @@
+---
+- name: Start and enable Apache
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: true
+  register: apache_service
+  failed_when: apache_service.state != 'started'
+  notify: Restart Apache
+
+- name: Configure Apache virtual host
+  ansible.builtin.template:
+    src: suitecrm.conf.j2
+    dest: /etc/apache2/sites-available/suitecrm.conf
+  register: configure_vhost
+  failed_when: configure_vhost.failed
+  notify: Restart Apache
+
+- name: Enable Apache site
+  ansible.builtin.command:
+    cmd: a2ensite suitecrm.conf
+  register: enable_site
+  failed_when: enable_site.rc != 0
+  notify: Restart Apache
+
+- name: Disable default Apache site
+  ansible.builtin.command:
+    cmd: a2dissite 000-default.conf
+  register: disable_default_site
+  failed_when: disable_default_site.rc != 0
+  notify: Restart Apache
+
+- name: Enable mod_rewrite
+  ansible.builtin.command:
+    cmd: a2enmod rewrite
+  register: enable_mod_rewrite
+  failed_when: enable_mod_rewrite.rc != 0
+  notify: Restart Apache

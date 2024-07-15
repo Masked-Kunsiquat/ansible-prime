@@ -1,0 +1,74 @@
+---
+- name: Download SuiteCRM package
+  ansible.builtin.get_url:
+    url: "{{ suitecrm_download_url }}"
+    dest: /tmp/suitecrm.zip
+  register: download_suitecrm
+  failed_when: download_suitecrm.status_code != 200
+
+- name: Unzip SuiteCRM package
+  ansible.builtin.command:
+    cmd: unzip -o /tmp/suitecrm.zip -d /tmp/SuiteCRM
+  register: unzip_suitecrm
+  failed_when: unzip_suitecrm.failed
+
+- name: Copy files to webserver root
+  ansible.builtin.copy:
+    src: /tmp/SuiteCRM/
+    dest: "{{ suitecrm_web_root }}"
+    remote_src: true
+  register: copy_files
+  failed_when: copy_files.failed
+
+- name: Set directory permissions in bulk
+  ansible.builtin.command:
+    cmd: find {{ suitecrm_web_root }} -type d -exec chmod 2755 {} +
+  register: dir_permissions
+  failed_when: dir_permissions.failed
+
+- name: Set file permissions in bulk
+  ansible.builtin.command:
+    cmd: find {{ suitecrm_web_root }} -type f -exec chmod 0644 {} +
+  register: file_permissions
+  failed_when: file_permissions.failed
+
+- name: Change ownerships to webserver user
+  ansible.builtin.command:
+    cmd: chown -R {{ suitecrm_web_user }}:{{ suitecrm_web_group }} {{ suitecrm_web_root }}
+  register: change_ownership
+  failed_when: change_ownership.failed
+
+- name: Make console executable
+  ansible.builtin.file:
+    path: "{{ suitecrm_web_root }}/bin/console"
+    mode: "0755"
+  register: make_console_exec
+  failed_when: make_console_exec.failed
+
+- name: Run CLI installer (optional)
+  ansible.builtin.command:
+    cmd: "{{ suitecrm_web_root }}/bin/console suitecrm:app:install -u '{{ suitecrm_web_user }}' -p '{{ suitecrm_web_user_password }}' -U '{{ suitecrm_db_user }}' -P {{ suitecrm_db_password }} -H '127.0.0.1' -N '{{ suitecrm_db_name }}' -S '{{ suitecrm_server_name }}' -d 'no'"
+  when: run_cli_installer | default(false)
+  register: run_cli_installer_cmd
+  failed_when: run_cli_installer_cmd.failed
+
+- name: Run UI installer (optional)
+  ansible.builtin.debug:
+    msg: Please complete the installation via the webUI at your server's address.
+  when: not run_cli_installer | default(false)
+
+- name: Clean up
+  block:
+    - name: Remove downloaded zip file
+      ansible.builtin.file:
+        path: /tmp/suitecrm.zip
+        state: absent
+      register: remove_zip_file
+      failed_when: remove_zip_file.failed
+
+    - name: Remove unzipped directory
+      ansible.builtin.file:
+        path: /tmp/SuiteCRM
+        state: absent
+      register: remove_unzipped_directory
+      failed_when: remove_unzipped_directory.failed
