@@ -25,6 +25,31 @@
   register: apt_install
   failed_when: apt_install.failed
 
+- name: Conigure PHP settings
+  block:
+  - name: Configure PHP for CLI
+    ansible.builtin.ini_file:
+      dest: "/etc/php/{{ suitecrm_php_version }}/cli/php.ini"
+      section: 'PHP'
+      option: "{{ item.option }}"
+      value: "{{ item.value }}"
+      state: present
+    loop:
+      - { option: 'upload_max_filesize', value: '6M' }
+      - { option: 'post_max_size', value: '6M' }
+
+  - name: Update PHP settings for Apache2
+    ansible.builtin.ini_file:
+      dest: "/etc/php/{{ suitecrm_php_version }}/apache2/php.ini"
+      section: 'PHP'
+      option: "{{ item.option }}"
+      value: "{{ item.value }}"
+      state: present
+    loop:
+      - { option: 'upload_max_filesize', value: '6M' }
+      - { option: 'post_max_size', value: '6M' }
+
+
 - name: Start and enable Apache
   ansible.builtin.service:
     name: apache2
