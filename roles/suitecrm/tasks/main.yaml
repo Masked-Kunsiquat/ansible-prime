@@ -1,0 +1,212 @@
+---
+- name: Install necessary packages for webserver and database
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apache2
+    - unzip
+    - wget
+    - php
+    - php-mysql
+    - libapache2-mod-php
+    - mysql-server
+    - python3-mysqldb
+    - php-xml
+  register: apt_install
+  failed_when: apt_install.failed
+
+- name: Start and enable Apache
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: true
+  register: apache_service
+  failed_when: apache_service.state != 'started'
+  notify: Restart Apache
+
+- name: Start and enable MySQL
+  ansible.builtin.service:
+    name: mysql
+    state: started
+    enabled: true
+  register: mysql_service
+  failed_when: mysql_service.state != 'started'
+
+- name: Set MySQL root password
+  ansible.builtin.mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "{{ suitecrm_db_root_password }}"
+    state: present
+    login_user: root
+    login_password: "{{ suitecrm_db_root_password }}"
+  loop:
+    - 'localhost'
+    - '127.0.0.1'
+    - '::1'
+  register: set_root_password
+  failed_when: set_root_password.failed
+
+- name: Remove anonymous MySQL users
+  ansible.builtin.mysql_user:
+    name: ''
+    host_all: true
+    state: absent
+    login_user: root
+    login_password: "{{ suitecrm_db_root_password }}"
+  register: remove_anonymous_users
+  failed_when: remove_anonymous_users.failed
+
+- name: Disallow root login remotely
+  ansible.builtin.mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "{{ suitecrm_db_root_password }}"
+    state: present
+    login_user: root
+    login_password: "{{ suitecrm_db_root_password }}"
+  loop:
+    - '127.0.0.1'
+    - '::1'
+  register: disallow_remote_root
+  failed_when: disallow_remote_root.failed
+
+- name: Remove MySQL test database
+  ansible.builtin.mysql_db:
+    name: test
+    state: absent
+    login_user: root
+    login_password: "{{ suitecrm_db_root_password }}"
+  register: remove_test_db
+  failed_when: remove_test_db.failed
+
+- name: Reload privilege tables
+  ansible.builtin.command:
+    cmd: >
+      mysql -u root -p{{ suitecrm_db_root_password }} -e "FLUSH PRIVILEGES;"
+  register: reload_privileges
+  failed_when: reload_privileges.failed
+
+- name: Create MySQL database
+  ansible.builtin.mysql_db:
+    name: "{{ suitecrm_db_name }}"
+    state: present
+    login_user: root
+    login_password: "{{ suitecrm_db_root_password }}"
+  register: create_db
+  failed_when: create_db.failed
+
+- name: Create MySQL user
+  ansible.builtin.mysql_user:
+    name: "{{ suitecrm_db_user }}"
+    password: "{{ suitecrm_db_password }}"
+    priv: "{{ suitecrm_db_name }}.*:ALL"
+    state: present
+    login_user: root
+    login_password: "{{ suitecrm_db_root_password }}"
+  register: create_user
+  failed_when: create_user.failed
+
+- name: Download SuiteCRM package
+  ansible.builtin.get_url:
+    url: "{{ suitecrm_download_url }}"
+    dest: /tmp/suitecrm.zip
+  register: download_suitecrm
+  failed_when: download_suitecrm.status_code != 200
+
+- name: Unzip SuiteCRM package
+  ansible.builtin.command:
+    cmd: "unzip -o /tmp/suitecrm.zip -d /tmp/SuiteCRM"
+  register: unzip_suitecrm
+  failed_when: unzip_suitecrm.failed
+
+- name: Copy files to webserver root
+  ansible.builtin.copy:
+    src: /tmp/SuiteCRM/
+    dest: "{{ suitecrm_web_root }}"
+    remote_src: true
+  register: copy_files
+  failed_when: copy_files.failed
+
+- name: Set directory permissions in bulk
+  ansible.builtin.command:
+    cmd: "find {{ suitecrm_web_root }} -type d -exec chmod 2755 {} +"
+  register: dir_permissions
+  failed_when: dir_permissions.failed
+
+- name: Set file permissions in bulk
+  ansible.builtin.command:
+    cmd: "find {{ suitecrm_web_root }} -type f -exec chmod 0644 {} +"
+  register: file_permissions
+  failed_when: file_permissions.failed
+
+- name: Change ownerships to webserver user
+  ansible.builtin.command:
+    cmd: "chown -R {{ suitecrm_web_user }}:{{ suitecrm_web_group }} {{ suitecrm_web_root }}"
+  register: change_ownership
+  failed_when: change_ownership.failed
+
+- name: Make console executable
+  ansible.builtin.file:
+    path: "{{ suitecrm_web_root }}/bin/console"
+    mode: "0755"
+  register: make_console_exec
+  failed_when: make_console_exec.failed
+
+- name: Configure Apache virtual host
+  ansible.builtin.template:
+    src: suitecrm.conf.j2
+    dest: /etc/apache2/sites-available/suitecrm.conf
+  register: configure_vhost
+  failed_when: configure_vhost.failed
+  notify: Restart Apache
+
+- name: Enable Apache site
+  ansible.builtin.command:
+    cmd: "a2ensite suitecrm.conf"
+  register: enable_site
+  failed_when: enable_site.rc != 0
+  notify: Restart Apache
+
+- name: Disable default Apache site
+  ansible.builtin.command:
+    cmd: "a2dissite 000-default.conf"
+  register: disable_default_site
+  failed_when: disable_default_site.rc != 0
+  notify: Restart Apache
+
+- name: Enable mod_rewrite
+  ansible.builtin.command:
+    cmd: "a2enmod rewrite"
+  register: enable_mod_rewrite
+  failed_when: enable_mod_rewrite.rc != 0
+  notify: Restart Apache
+
+- name: Run CLI installer (optional)
+  ansible.builtin.command:
+    cmd: "{{ suitecrm_web_root }}/bin/console suitecrm:app:install"
+  when: run_cli_installer | default(false)
+  register: run_cli_installer_cmd
+  failed_when: run_cli_installer_cmd.failed
+
+- name: Run UI installer (optional)
+  ansible.builtin.debug:
+    msg: "Please complete the installation via the webUI at your server's address."
+  when: not run_cli_installer | default(false)
+
+- name: Clean up mess
+  block:
+    - name: Remove downloaded zip file
+      ansible.builtin.file:
+        path: /tmp/suitecrm.zip
+        state: absent
+      register: remove_zip_file
+      failed_when: remove_zip_file.failed
+
+    - name: Remove unzipped directory
+      ansible.builtin.file:
+        path: /tmp/SuiteCRM
+        state: absent
+      register: remove_unzipped_directory
+      failed_when: remove_unzipped_directory.failed

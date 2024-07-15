@@ -1,0 +1,12 @@
+# suitecrm/vars/main.yaml
+---
+suitecrm_download_url: "https://github.com/salesagility/SuiteCRM-Core/releases/download/v8.6.1/SuiteCRM-8.6.1.zip"
+suitecrm_web_root: /var/www/html/suitecrm
+suitecrm_web_user: www-data
+suitecrm_web_group: www-data
+suitecrm_db_name: suitecrm_db
+suitecrm_db_user: "suite-crm" # ( )
+suitecrm_db_password: "" # (password for the database user)
+suitecrm_db_root_password: "" # (password for the ROOT database user)
+suitecrm_server_name: "" # (i.e. "suitecrm.example.com")
+suitecrm_run_cli_installer: false # (Set to 'true' if you want to run CLI installer)
