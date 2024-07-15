@@ -20,7 +20,7 @@
   service:
     name: apache2
     state: started
-    enabled: yes
+    enabled: true
   register: apache_service
   failed_when: apache_service.state != 'started'
   notify: Restart Apache
@@ -29,14 +29,14 @@
   service:
     name: mysql
     state: started
-    enabled: yes
+    enabled: true
   register: mysql_service
   failed_when: mysql_service.state != 'started'
 
 - name: Secure MySQL installation
   mysql_secure_installation:
     login_user: root
-    login_password: ''
+    login_password: ""
     new_password: "{{ db_root_password }}"
     root_password_changed: true
     remove_anonymous_users: true
@@ -77,7 +77,7 @@
   unarchive:
     src: /tmp/suitecrm.zip
     dest: /tmp/
-    remote_src: yes
+    remote_src: true
   register: unzip_suitecrm
   failed_when: unzip_suitecrm is failed
 
@@ -85,14 +85,14 @@
   copy:
     src: /tmp/SuiteCRM-*
     dest: "{{ web_root }}"
-    remote_src: yes
+    remote_src: true
   register: copy_files
   failed_when: copy_files is failed
 
 - name: Set directory permissions
   find:
     paths: "{{ web_root }}"
-    recurse: yes
+    recurse: true
     file_type: directory
   register: dir_permissions
   failed_when: dir_permissions is failed
@@ -100,7 +100,7 @@
 - name: Set file permissions
   find:
     paths: "{{ web_root }}"
-    recurse: yes
+    recurse: true
     file_type: file
   register: file_permissions
   failed_when: file_permissions is failed
@@ -109,7 +109,7 @@
   file:
     path: "{{ item.path }}"
     state: directory
-    mode: '2755'
+    mode: "2755"
   loop: "{{ dir_permissions.files }}"
   register: apply_dir_perms
   failed_when: apply_dir_perms is failed
@@ -118,7 +118,7 @@
   file:
     path: "{{ item.path }}"
     state: file
-    mode: '0644'
+    mode: "0644"
   loop: "{{ file_permissions.file }}"
   register: apply_file_perms
   failed_when: apply_file_perms is failed
@@ -131,7 +131,7 @@
 - name: Make console executable
   file:
     path: "{{ web_root }}/bin/console"
-    mode: '0755'
+    mode: "0755"
   register: make_console_exec
   failed_when: make_console_exec is failed
 
@@ -169,5 +169,5 @@
 
 - name: Run UI installer (optional)
   debug:
-    msg: "Please complete the installation via the webUI at your server's address."
+    msg: Please complete the installation via the webUI at your server's address.
   when: run_cli_installer is not defined or not run_cli_installer
