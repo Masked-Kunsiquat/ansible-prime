@@ -5,6 +5,8 @@
   roles:
     - suitecrm
   vars:
+    suitecrm_web_user: "" # (Set this option if you're using the CLI installer)
+    suitecrm_web_user_password: "" # (Set this option if you're using the CLI installer)
     suitecrm_db_name: ""
     suitecrm_db_user: ""
     suitecrm_db_password: ""
