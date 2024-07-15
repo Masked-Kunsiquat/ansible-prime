@@ -11,3 +11,5 @@ suitecrm_db_root_password: "" # (password for the ROOT database user)
 suitecrm_server_name: "" # (i.e. "suitecrm.example.com")
 suitecrm_run_cli_installer: false # (Set to 'true' if you want to run CLI installer)
 suitecrm_php_version: "8.1"
+suitecrm_admin_username: "admin"
+suitecrm_admin_password: "CHANGEME" # (Please change this password; will be used when running CLI installer)
