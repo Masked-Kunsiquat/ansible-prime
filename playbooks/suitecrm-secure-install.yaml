@@ -1,0 +1,14 @@
+---
+- name: Setup SuiteCRM
+  hosts: 10.0.0.42
+  become: true
+  roles:
+    - suitecrm
+  vars:
+    suitecrm_db_name: "suitecrm_db"
+    suitecrm_db_user: "suite-crm"
+    suitecrm_db_password: "DDGPDJbCsT3JH*Xg4UHpwTQwVjaqfC2nQDer4*BWh.s9sv@U8zLtbd.knUwbvEfLMqhs8e6uJ*qCybbt"
+    suitecrm_db_root_password: "vMfT!ZijdTfW9EJ-.H2t2UEjx3TVka8qA6*FNvjXaC8_87cK2mMcVfUN7ztBbJsvp3e3t-QB..a*o8Gq"
+    suitecrm_server_name: "https://crm.brysmarthome.page"
+    suitecrm_run_cli_installer: "true" # (Set to 'true' if you want to run CLI installer)
+    suitcrm_php_version: ""
