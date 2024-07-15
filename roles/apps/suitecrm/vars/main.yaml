@@ -2,11 +2,11 @@
 ---
 suitecrm_download_url: ""
 
-web_root: "/var/www/html/suitecrm"
-web_user: "www-data"
-web_group: "www-data"
+web_root: /var/www/html/suitecrm
+web_user: www-data
+web_group: www-data
 
-db_name: "suitecrm_db"
+db_name: suitecrm_db
 db_user: ""
 db_password: ""
 db_root_password: ""
