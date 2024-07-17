@@ -1,0 +1,55 @@
+# This file was configured by an Ansible role on {{ ansible_date_time.date }}
+# SSHD Config template
+
+# Basic settings
+Port 22
+Protocol 2
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+UsePrivilegeSeparation yes
+
+# Logging
+SyslogFacility AUTH
+LogLevel INFO
+
+# Authentication
+LoginGraceTime 2m
+PermitRootLogin no
+StrictModes yes
+MaxAuthTries 6
+MaxSessions 10
+
+# RSA Authentication
+PubkeyAuthentication yes
+AuthorizedKeysFile  .ssh/authorized_keys
+
+# Password Authentication
+PasswordAuthentication no
+PermitEmptyPasswords no
+
+# PAM Authentication
+ChallengeResponseAuthentication no
+UsePAM yes
+
+# AllowGroups sshusers
+
+# X11
+X11Forwarding yes
+X11DisplayOffset 10
+PrintMotd no
+PrintLastLog yes
+TCPKeepAlive yes
+AcceptEnv LANG LC_*
+
+# SFTP
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+# Other security settings
+PermitTunnel no
+AllowTcpForwarding yes
+AllowAgentForwarding yes
+ClientAliveInterval 300
+ClientAliveCountMax 2
+Compression delayed
