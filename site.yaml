@@ -1,6 +1,0 @@
----
-- name: Setup SuiteCRM
-  hosts: 10.0.0.58
-  become: true
-  roles:
-    - suitecrm

@@ -1,0 +1,50 @@
+---
+# Main tasks file
+
+# Create a user
+- name: Create a new user
+  ansible.builtin.user:
+    name: "{{ setup_machine_new_user }}"
+    password: "{{ setup_machine_user_password | password_hash('sha512') }}"
+    shell: /bin/bash
+    state: present
+
+# Set up SSHD config securely (for all distributions)
+- name: Backup the original sshd_config
+  ansible.builtin.copy:
+    src: /etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config.bak
+    remote_src: true
+    owner: "{{ setup_machine_file_owner }}"
+    group: "{{ setup_machine_file_group }}"
+    mode: '0600'
+
+- name: Configure sshd_config
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: "{{ setup_machine_file_owner }}"
+    group: "{{ setup_machine_file_group }}"
+    mode: '0600'
+  notify: Restart SSHD
+
+# Pass along SSH keys (if provided)
+- name: Copy SSH key for new user
+  ansible.builtin.authorized_key:
+    user: "{{ setup_machine_new_user }}"
+    state: present
+    key: "{{ lookup('file', setup_machine_ssh_key_path) }}"
+  when: setup_machine_ssh_key_path != ''
+
+# Include OS-specific tasks
+- name: Include Debian tasks
+  ansible.builtin.include_tasks: debian.yml
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Include Ubuntu tasks
+  ansible.builtin.include_tasks: ubuntu.yml
+  when: ansible_facts['os_family'] == 'Debian' and ansible_facts['distribution'] == 'Ubuntu'
+
+- name: Include Alpine tasks
+  ansible.builtin.include_tasks: alpine.yml
+  when: ansible_facts['os_family'] == 'Alpine'

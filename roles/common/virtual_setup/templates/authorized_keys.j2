@@ -1,9 +1,0 @@
-
-# Managed by Ansible
-
-{{ newadmin_ssh_pub_key }}
-
-# Additional Public Keys
-{% for additional_key in additional_ssh_keys %}
-{{ additional_key }}
-{% endfor %}

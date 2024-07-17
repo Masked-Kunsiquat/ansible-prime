@@ -1,0 +1,8 @@
+---
+# Main tasks file
+
+- name: Include tasks to install SuiteCRM
+  ansible.builtin.include_tasks: install_suitecrm.yml
+
+- name: Include tasks to configure SuiteCRM
+  ansible.builtin.include_tasks: configure_suitecrm.yml
