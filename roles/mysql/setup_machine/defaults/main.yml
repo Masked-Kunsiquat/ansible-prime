@@ -1,0 +1,17 @@
+---
+# Default variables for setup_machine role
+setup_machine_new_user: 'myuser'
+setup_machine_user_password: 'password'
+setup_machine_ssh_key_path: ''  # Leave empty if not passing an SSH key
+setup_machine_packages_common:
+  - git
+  - curl
+  - vim
+setup_machine_packages_debian:
+  - htop
+  - tree
+setup_machine_packages_alpine:
+  - htop
+  - tree
+setup_machine_file_owner: "{{ setup_machine_new_user }}"
+setup_machine_file_group: "{{ setup_machine_new_user }}"
