@@ -34,4 +34,10 @@ Include this role in your playbook:
     suitecrm_file_owner: 'www-data'
     suitecrm_file_group: 'www-data'
   roles:
+    - role: mysql
+      vars:
+        mysql_db_root_password: "{{ suitecrm_db_root_password }}"
+        mysql_db_name: "{{ suitecrm_db_name }}"
+        mysql_db_user: "{{ suitecrm_db_user }}"
+        mysql_db_password: "{{ suitecrm_db_password }}"
     - suitecrm
