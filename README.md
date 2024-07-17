@@ -1,33 +1,29 @@
-# Repository Name
+# My Ansible Project
 
-This repository contains Ansible roles for setting up various applications and common configurations.
+This project contains Ansible playbooks and roles to set up and configure various components in a HomeLab environment. The roles are designed to be modular and support multiple Linux distributions, including Ubuntu, Debian, and Alpine Linux.
 
-## Roles Available
+## Table of Contents
 
-### [docker-radarr](./roles/apps/docker-radarr/README.md)
+- [Setup Machine Role](roles/setup_machine/README.md)
+- [SuiteCRM Role](roles/suitecrm/README.md)
+- [MySQL Role](roles/mysql/README.md)
 
-This role installs and configures Radarr, a movie management application for Docker.
+## Getting Started
 
-### [docker-sonarr](./roles/apps/docker-sonarr/README.md)
+### Prerequisites
 
-This role installs and configures Sonarr, a TV show management application for Docker.
+- Ansible installed on your control machine
+- SSH access to the target machines
 
-### [virtual_setup](./roles/common/virtual_setup/README.md)
+### Directory Structure
 
-This role sets up common configurations for virtual servers, including SSH configurations and user management.
 
-### [webtrees](./roles/webtrees/README.md)
+### Running Playbooks
 
-This role installs and configures Webtrees, a web-based genealogy application.
+1. **Setup Machine Playbook**:
+   ```sh
+   ansible-playbook -i hosts setup_machine_playbook.yml
 
-## Usage
-
-Each role directory contains a README.md file with detailed instructions on how to use the role, its variables, and dependencies.
-
-## License
-
-[License Information]
-
-## Author Information
-
-[Your Name or Organization]
+2. **Install SuiteCRM Playbook**:
+    ```sh
+    ansible-playbook -i hosts install_suitecrm_playbook.yml
