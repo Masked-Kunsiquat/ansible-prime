@@ -1,6 +1,0 @@
----
-# handlers file for docker-radarr
-- name: restart Radarr1 container
-  community.docker.docker_container:
-    name: radarr
-    state: restarted

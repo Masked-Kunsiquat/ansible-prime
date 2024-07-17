@@ -1,8 +1,0 @@
----
-# tasks file for docker-radarr
-
-- name: TBD
-  ansible.builtin.inlcude_tasks: prereq.yml
-
-- name: TBD2
-  ansible.builtin.inlcude_tasks: create-container.yml
