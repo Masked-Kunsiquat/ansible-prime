@@ -1,0 +1,48 @@
+---
+# Install MySQL server
+- name: Install MySQL server on Debian/Ubuntu
+  ansible.builtin.apt:
+    name: mariadb-server
+    state: present
+    update_cache: true
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Install MySQL server on Alpine
+  ansible.builtin.apk:
+    name: mariadb
+    state: present
+  when: ansible_facts['os_family'] == 'Alpine'
+
+- name: Start and enable MySQL service on Debian/Ubuntu
+  ansible.builtin.service:
+    name: mysql
+    state: started
+    enabled: true
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Start and enable MySQL service on Alpine
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: true
+  when: ansible_facts['os_family'] == 'Alpine'
+
+- name: Set MySQL root password
+  ansible.builtin.mysql_user:
+    name: root
+    password: "{{ mysql_db_root_password }}"
+    host_all: true
+    priv: '*.*:ALL,GRANT'
+  failed_when: set_root_password.failed and "password already set" not in set_root_password.msg
+
+- name: Create database
+  ansible.builtin.mysql_db:
+    name: "{{ mysql_db_name }}"
+    state: present
+
+- name: Create database user
+  ansible.builtin.mysql_user:
+    name: "{{ mysql_db_user }}"
+    password: "{{ mysql_db_password }}"
+    priv: "{{ mysql_db_name }}.*:ALL"
+    state: present
