@@ -15,8 +15,6 @@ This project contains Ansible playbooks and roles to set up and configure variou
 - Ansible installed on your control machine
 - SSH access to the target machines
 
-### Directory Structure
-
 
 ### Running Playbooks
 
