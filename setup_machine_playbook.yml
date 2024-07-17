@@ -1,10 +1,11 @@
+---
 - name: Setup New Machine
   hosts: homelab
   become: true
   vars:
-    setup_machine_new_user: 'custom_user'
-    setup_machine_user_password: 'custom_password'
-    setup_machine_ssh_key_path: ''  # Leave this empty if not passing an SSH key
+    setup_machine_new_user: custom_user
+    setup_machine_user_password: custom_password
+    setup_machine_ssh_key_path: "" # Leave this empty if not passing an SSH key
     setup_machine_packages_common:
       - git
       - curl
@@ -15,7 +16,7 @@
     setup_machine_packages_alpine:
       - htop
       - tree
-    setup_machine_file_owner: 'custom_user'
-    setup_machine_file_group: 'custom_user'
+    setup_machine_file_owner: custom_user
+    setup_machine_file_group: custom_user
   roles:
     - setup_machine

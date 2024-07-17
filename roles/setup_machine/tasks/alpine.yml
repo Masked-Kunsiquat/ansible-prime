@@ -3,12 +3,13 @@
 
 # Install common packages
 - name: Install common packages on Alpine
-  apk:
+  community.general.apk:
     name: "{{ setup_machine_packages_common }}"
     state: present
 
 # Install Alpine-specific packages
+
 - name: Install Alpine-specific packages
-  apk:
+  community.general.apk:
     name: "{{ setup_machine_packages_alpine }}"
     state: present
