@@ -7,5 +7,5 @@
     dest: "{{ suitecrm_install_dir }}/config.php"
   owner: "{{ suitecrm_file_owner }}"
   group: "{{ suitecrm_file_group }}"
-  mode: '0644'
+  mode: "0644"
   notify: Restart Apache

@@ -1,17 +1,18 @@
+---
 - name: Install SuiteCRM
   hosts: homelab
   become: true
   vars:
-    suitecrm_version: '7.11.18'
-    suitecrm_url: "https://suitecrm.com/files/162/SuiteCRM-{{ suitecrm_version }}/release/413/SuiteCRM-{{ suitecrm_version }}.zip"
+    suitecrm_version: 7.11.18
+    suitecrm_url: https://suitecrm.com/files/162/SuiteCRM-{{ suitecrm_version }}/release/413/SuiteCRM-{{ suitecrm_version }}.zip
     suitecrm_install_dir: /var/www/html/suitecrm
-    suitecrm_db_root_password: 'root_password'
-    suitecrm_db_name: 'suitecrm'
-    suitecrm_db_user: 'suitecrm_user'
-    suitecrm_db_password: 'suitecrm_password'
-    suitecrm_php_version: '7.4'
-    suitecrm_file_owner: 'www-data'
-    suitecrm_file_group: 'www-data'
+    suitecrm_db_root_password: root_password
+    suitecrm_db_name: suitecrm
+    suitecrm_db_user: suitecrm_user
+    suitecrm_db_password: suitecrm_password
+    suitecrm_php_version: "7.4"
+    suitecrm_file_owner: www-data
+    suitecrm_file_group: www-data
   roles:
     - role: mysql
       vars:
