@@ -20,6 +20,7 @@ venv/
 # Ignore system-specific files
 *.DS_Store
 Thumbs.db
+*_playbook-SECURE.yml
 
 # Ignore default main.yml from each role (ONE-levels deep)
 # roles/*/defaults/main.yml
