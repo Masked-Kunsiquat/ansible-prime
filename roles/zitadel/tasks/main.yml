@@ -1,0 +1,44 @@
+---
+- name: Ensure PostgreSQL is installed
+  ansible.builtin.apt:
+    name: postgresql
+    state: present
+
+- name: Start and enable PostgreSQL service
+  ansible.builtin.systemd:
+    name: postgresql
+    enabled: true
+    state: started
+
+- name: Create Zitadel database
+  become: true
+  become_user: postgres
+  ansible.builtin.postgresql_db:
+    name: zitadel
+
+- name: Create Zitadel database user
+  become: true
+  become_user: postgres
+  ansible.builtin.postgresql_user:
+    name: zitadel
+    password: "{{ zitadel_database_password }}"
+    priv: "ALL"
+
+- name: Ensure Zitadel is installed
+  ansible.builtin.apt:
+    name: zitadel
+    state: present
+
+- name: Configure Zitadel
+  ansible.builtin.template:
+    src: zitadel-config.j2
+    dest: /etc/zitadel/config.yaml
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Start and enable Zitadel service
+  ansible.builtin.systemd:
+    name: zitadel
+    enabled: true
+    state: started

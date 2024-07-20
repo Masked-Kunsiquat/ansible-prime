@@ -1,0 +1,12 @@
+---
+- name: Install Zitadel with PostgreSQL
+  become: true
+  hosts: homelab # Add correct host
+  vars:
+    zitadel_reply_address: ""
+    zitadel_database_password: ""
+    zitadel_database_username: ""
+    zitadel_smtp_username: ""
+    zitadel_smtp_password: ""
+  roles:
+    - zitadel
