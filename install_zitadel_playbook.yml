@@ -6,6 +6,7 @@
     zitadel_reply_address: ""
     zitadel_database_password: ""
     zitadel_database_username: ""
+    zitadel_admin_password: ""
     zitadel_smtp_username: ""
     zitadel_smtp_password: ""
   roles:
