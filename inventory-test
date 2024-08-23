@@ -1,5 +1,0 @@
-[webservers]
-10.0.0.42 ansible_user=root
-
-[zitadel-test]
-10.0.0.62 ansible_user=root

@@ -1,6 +1,0 @@
-zitadel_database_password: "ChangeMe135*32"
-zitadel_database_username: "zitadel"
-zitadel_admin_password: "admin-secure-password"
-zitadel_smtp_username: "smtp-username"
-zitadel_smtp_password: "smtp-secure-password"
-zitadel_reply_address: ""

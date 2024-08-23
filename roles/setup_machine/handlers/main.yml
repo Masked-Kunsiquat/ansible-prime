@@ -1,7 +1,0 @@
----
-# Handlers for setup_machine role
-
-- name: Restart SSHD
-  ansible.builtin.service:
-    name: ssh
-    state: restarted
