@@ -29,3 +29,33 @@ bazarr4k_pgid: ""
 bazarr4k_vol_config: "{{ base_dir }}/bazarr4k/config"
 bazarr4k_docker_mod: "ghcr.io/themepark-dev/theme.park:bazarr"
 bazarr4k_tp_addon: "bazarr-4k-logo"
+
+## Radarr
+radarr_project_name: "radarr"
+radarr_config_dir: "{{ base_dir }}/{{ radarr_project_name }}/config"
+radarr_compose_file: "{{ base_dir }}/{{ radarr_project_name }}/compose.yaml"
+radarr_image: "lscr.io/linuxserver/radarr:latest"
+radarr_tz: "America/New_York"
+radarr_shared: "/path/to/shared/folder"
+radarr_driver: "gelf"
+radarr_gelf_address: ""
+
+# Radarr Instance Variables
+radarr_puid: ""
+radarr_pgid: ""
+radarr_vol_config: "{{ base_dir }}/{{ radarr_project_name }}/config"
+radarr_label1: ""
+radarr_label2: ""
+radarr_tdarr_db_id: ""
+radarr_tdarr_translate: ""
+
+# Radarr 4K Instance Variables
+radarr4k_puid: ""
+radarr4k_pgid: ""
+radarr4k_vol_config: "{{ base_dir }}/radarr4k/config"
+radarr4k_docker_mod: "ghcr.io/themepark-dev/theme.park:radarr"
+radarr4k_tp_addon: "radarr-4k-logo"
+radarr4k_label1: ""
+radarr4k_label2: ""
+radarr4k_tdarr_db_id: ""
+radarr4k_tdarr_translate: ""
