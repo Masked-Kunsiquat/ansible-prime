@@ -1,0 +1,16 @@
+version: "3.3"
+services:
+  {{ homepage_project_name }}:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: "{{ homepage_project_name }}"
+    ports:
+      - 3000:3000
+    volumes:
+      - "{{ homepage_config_dir }}:/app/config"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "{{ homepage_icons_dir }}:/app/public/icons"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "{{ homepage_gelf_address }}"
+    restart: unless-stopped
