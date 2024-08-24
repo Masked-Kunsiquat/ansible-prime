@@ -1,0 +1,10 @@
+---
+- name: Ensure config directory exists
+  file:
+    path: "{{ homepage_config_dir }}"
+    state: directory
+
+- name: Ensure icons directory exists
+  file:
+    path: "{{ homepage_icons_dir }}"
+    state: directory
