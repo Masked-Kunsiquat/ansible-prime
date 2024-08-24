@@ -1,0 +1,10 @@
+---
+- name: Ensure config directory exists for Radarr
+  file:
+    path: "{{ radarr_config_dir }}"
+    state: directory
+
+- name: Copy or generate .env file for Radarr
+  template:
+    src: .env.j2
+    dest: "{{ radarr_config_dir }}/.env"
