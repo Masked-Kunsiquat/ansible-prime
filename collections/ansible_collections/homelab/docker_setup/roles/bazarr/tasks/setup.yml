@@ -1,0 +1,10 @@
+---
+- name: Ensure config directory exists for Bazarr
+  file:
+    path: "{{ bazarr_config_dir }}"
+    state: directory
+
+- name: Copy or generate .env file
+  template:
+    src: .env.j2
+    dest: "{{ bazarr_config_dir }}/.env"
