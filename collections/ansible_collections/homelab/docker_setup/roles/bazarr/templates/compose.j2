@@ -1,0 +1,43 @@
+version: "2.1"
+services:
+  bazarr:
+    image: "${BAZARR_IMAGE}"
+    container_name: "bazarr"
+    environment:
+      - PUID=${BAZARR_PUID}
+      - PGID=${BAZARR_PGID}
+      - TZ=${BAZARR_TZ}
+    volumes:
+      - ${BAZARR_VOL_CONFIG}:/config
+      - ${BAZARR_SHARED}
+    logging:
+      driver: ${BAZARR_DRIVER}
+      options:
+        gelf-address: ${BAZARR_GELF_ADDRESS}
+    env_file:
+      - .env
+    ports:
+      - "6767:6767"
+    restart: unless-stopped
+  bazarr2:
+    image: "${BAZARR_IMAGE}"
+    container_name: "bazarr4k"
+    environment:
+      - PUID=${BAZARR4K_PUID}
+      - PGID=${BAZARR4K_PGID}
+      - TZ=${BAZARR_TZ}
+      - DOCKER_MODS=${BAZARR4K_DOCKER_MOD}
+      - TP_ADDON=${BAZARR4K_TP_ADDON}
+    volumes:
+      - ${BAZARR4K_VOL_CONFIG}:/config
+      - ${BAZARR_SHARED}
+    logging:
+      driver: ${BAZARR_DRIVER}
+      options:
+        gelf-address: ${BAZARR_GELF_ADDRESS}
+    env_file:
+      - .env
+    ports:
+      - "6769:6767"
+    restart: unless-stopped
+networks: {}
