@@ -1,0 +1,10 @@
+---
+- name: Deploy Docker Compose file for Bazarr
+  template:
+    src: compose.j2
+    dest: "{{ bazarr_compose_file }}"
+
+- name: Start Bazarr containers
+  command: docker-compose up -d
+  args:
+    chdir: "{{ base_dir }}/{{ bazarr_project_name }}"
