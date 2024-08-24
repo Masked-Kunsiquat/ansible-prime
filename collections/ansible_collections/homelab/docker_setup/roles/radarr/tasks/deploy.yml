@@ -1,0 +1,10 @@
+---
+- name: Deploy Docker Compose file for Radarr
+  template:
+    src: compose.j2
+    dest: "{{ radarr_compose_file }}"
+
+- name: Start Radarr containers
+  command: docker-compose up -d
+  args:
+    chdir: "{{ base_dir }}/{{ radarr_project_name }}"
