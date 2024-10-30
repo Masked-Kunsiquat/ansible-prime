@@ -19,40 +19,37 @@ def create_github_issue(title, body):
         return False
     return True
 
-def format_lint_issues(issues):
-    formatted_issues = []
-    for issue in issues:
-        loc = issue['location']
-        line = loc['positions']['begin']['line'] if 'positions' in loc else 'unknown'
-        formatted_issues.append(f"- [ ] **{issue['check_name']}** at `{loc['path']}:{line}`: {issue['description']}\n")
-    return "\n".join(formatted_issues)
-
 def main(json_file):
     with open(json_file) as f:
-        lint_output = json.load(f)
+        issues = json.load(f)
 
-    if lint_output:
-        title = "Ansible Lint Issues"
-        body = "### Linting Errors\n\n"
-        body += "| Issue Type | Description | Location |\n"
-        body += "|------------|-------------|----------|\n"
+    # Group issues by check name
+    grouped_issues = {}
+    for issue in issues:
+        check_name = issue['check_name']
+        if check_name not in grouped_issues:
+            grouped_issues[check_name] = []
+        grouped_issues[check_name].append(issue)
 
-        for issue in lint_output:
-            check_name = issue['check_name']
-            description = issue['description']
-            loc = issue['location']
-            line = loc['positions']['begin']['line'] if 'positions' in loc else 'unknown'
-            path = loc['path']
-            body += f"| {check_name} | {description} | `{path}:{line}` |\n"
+    # Create the body with collapsible sections
+    body = "### Linting Issues\n\n"
 
-        body += "\n### Checklist\n\n"
-        body += format_lint_issues(lint_output)
+    for check_name, issues in grouped_issues.items():
+        body += f"<details>\n<summary>{check_name} ({len(issues)})</summary>\n\n"
+        body += "| Description | Location |\n|-------------|----------|\n"
+        
+        for issue in issues:
+            # Check for positions
+            location = f"{issue['location']['path']}:{issue['location'].get('positions', {}).get('begin', {}).get('line', 'unknown')}"
+            body += f"| {issue['description']} | {location} |\n"
 
-        # Create the issue
-        if not create_github_issue(title, body):
-            print("Error creating the main issue for linting errors.")
-    else:
-        print("No issues found.")
+        body += "</details>\n\n"
+
+    body += "### Action Items\n\n- [ ] Fix the issues listed above.\n"
+
+    # Create the issue
+    if not create_github_issue("Ansible Linting Issues", body):
+        print("Error creating issue for linting errors.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
