@@ -18,7 +18,7 @@ jobs:
         id: lint
         uses: ansible/ansible-lint-action@v24.9.2
         with:
-          args: "--format json playbooks/*.yml roles/docker_services/**/*.yml"
+          args: "--format json playbooks/*.yml roles/docker_services/**/*.yml > ansible-lint-output.json" # Redirect output to JSON file
         continue-on-error: true
       
       - name: Process Ansible Lint Output
@@ -77,7 +77,7 @@ EOF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          issue_title="Ansible Linting Errors Report - Run #${{ github.run_number }} - $(date '+%Y-%m-%d %H:%M:%S')"
+          issue_title="Ansible Linting Errors Report - Run #${{ github.run_number }} - $(date "+%Y-%m-%d %H:%M:%S")"
           issue_body=$(cat ansible-lint-report.md | sed ':a;N;$!ba;s/\n/\\n/g') # replaces newlines for API compatibility
 
           curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
