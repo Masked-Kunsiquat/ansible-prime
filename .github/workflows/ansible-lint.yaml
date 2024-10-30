@@ -25,32 +25,32 @@ jobs:
         if: steps.lint.outcome == 'failure'
         run: |
           python - <<EOF
-          import json
-          from pathlib import Path
+import json
+from pathlib import Path
 
-          # Load JSON data from the output of ansible-lint
-          data = json.loads(Path('ansible-lint-output.json').read_text())
+# Load JSON data from the output of ansible-lint
+data = json.loads(Path('ansible-lint-output.json').read_text())
 
-          # Create Markdown table
-          table = "| Line # | File Path | Error Type | Description |\n|--------|-----------|------------|-------------|\n"
-          for error in data:
-              line = error.get("line", "N/A")
-              error_type = error.get("type", "N/A")
-              description = error.get("message", "N/A")
-              file_path = error.get("path", "N/A")
-              table += f"| {line} | {file_path} | {error_type} | {description} |\n"
+# Create Markdown table
+table = "| Line # | File Path | Error Type | Description |\n|--------|-----------|------------|-------------|\n"
+for error in data:
+    line = error.get("line", "N/A")
+    error_type = error.get("type", "N/A")
+    description = error.get("message", "N/A")
+    file_path = error.get("path", "N/A")
+    table += f"| {line} | {file_path} | {error_type} | {description} |\n"
 
-          # Create Markdown checklist
-          checklist = ""
-          for error in data:
-              line = error.get("line", "N/A")
-              error_type = error.get("type", "N/A")
-              description = error.get("message", "N/A")
-              file_path = error.get("path", "N/A")
-              checklist += f"- [ ] **{error_type}**: {description} (File: {file_path}, Line: {line})\n"
+# Create Markdown checklist
+checklist = ""
+for error in data:
+    line = error.get("line", "N/A")
+    error_type = error.get("type", "N/A")
+    description = error.get("message", "N/A")
+    file_path = error.get("path", "N/A")
+    checklist += f"- [ ] **{error_type}**: {description} (File: {file_path}, Line: {line})\n"
 
-          # Combine table and checklist with headings and <details> tags
-          markdown = """
+# Combine table and checklist with headings and <details> tags
+markdown = """
 ### Linting Report
 
 <details>
@@ -68,17 +68,17 @@ jobs:
 </details>
 """.format(table=table, checklist=checklist)
 
-          # Save the markdown output
-          Path("ansible-lint-report.md").write_text(markdown)
-          EOF
+# Save the markdown output
+Path("ansible-lint-report.md").write_text(markdown)
+EOF
 
       - name: Create GitHub Issue for Linting Errors
         if: steps.lint.outcome == 'failure'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          issue_title="Ansible Linting Errors Report - Run #${{ github.run_number }} - $(date "+%Y-%m-%d %H:%M:%S")"
-          issue_body=$(cat ansible-lint-report.md)
+          issue_title="Ansible Linting Errors Report - Run #${{ github.run_number }} - $(date '+%Y-%m-%d %H:%M:%S')"
+          issue_body=$(cat ansible-lint-report.md | sed ':a;N;$!ba;s/\n/\\n/g') # replaces newlines for API compatibility
 
           curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
             -d "{\"title\": \"$issue_title\", \"body\": \"$issue_body\"}" \
