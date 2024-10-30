@@ -38,6 +38,9 @@ jobs:
             echo "No linting errors found."
             echo "::set-output name=errors_found::false"
           fi
+ 
+      - name: Debug Lint output
+        run: cat ansible-lint-output.json
 
       - name: Process Ansible Lint Output
         if: steps.check_errors.outputs.errors_found == 'true'
