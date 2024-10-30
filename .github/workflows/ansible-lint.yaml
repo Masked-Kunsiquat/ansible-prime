@@ -1,67 +1,27 @@
-name: Ansible Lint CI
+name: Ansible Lint
 
-on:
-  pull_request:
-    branches: ["main", "stable", "release/v*"]
-  push:
-    branches: ["main", "stable", "release/v*"]
+on: [push, pull_request]
 
 jobs:
-  build:
-    name: Ansible Lint
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: Install Ansible and Ansible Lint
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install ansible ansible-lint
+          pip install ansible-lint requests
 
-      - name: Run Ansible Lint and Save Output
+      - name: Run ansible-lint
         run: |
           ansible-lint ansible/playbooks/deploy_services.yaml ansible/roles/docker_services/**/*.yaml --format json > ansible-lint-output.json || true
 
-      - name: Check for Errors
-        id: check_errors
+      - name: Parse ansible-lint output and create issues
         run: |
-          if [[ -s ansible-lint-output.json ]]; then
-            echo "Linting errors found."
-            echo "::set-output name=errors_found::true"
-          else
-            echo "No linting errors found."
-            echo "::set-output name=errors_found::false"
-          fi
- 
-      - name: Debug Lint output
-        run: cat ansible-lint-output.json
-
-      - name: Process Ansible Lint Output
-        if: steps.check_errors.outputs.errors_found == 'true'
-        run: |
-          python3 .github/workflows/process_lint_output.py
-
-      - name: Create GitHub Issue for Linting Errors
-        if: steps.check_errors.outputs.errors_found == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          issue_title="Ansible Linting Errors Report - Run #${{ github.run_number }} - $(date '+%Y-%m-%d %H:%M:%S')"
-          issue_body=$(cat ansible-lint-report.md | sed ':a;N;$!ba;s/\n/\\n/g') # replaces newlines for API compatibility
-
-          response=$(curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
-            -d "{\"title\": \"$issue_title\", \"body\": \"$issue_body\"}" \
-            https://api.github.com/repos/${{ github.repository }}/issues)
-
-          if [[ $? -ne 0 ]]; then
-            echo "Error creating GitHub issue."
-            exit 1
-          else
-            echo "GitHub issue created successfully."
-          fi
+          python scripts/create_issues.py ansible-lint-output.json
