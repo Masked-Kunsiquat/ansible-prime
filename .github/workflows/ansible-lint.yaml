@@ -25,11 +25,22 @@ jobs:
           pip install ansible ansible-lint
 
       - name: Run Ansible Lint and Save Output
-        run: ansible-lint playbooks/*.yml roles/docker_services/**/*.yml --format json > ansible-lint-output.json
-        continue-on-error: true
+        run: |
+          ansible-lint playbooks/*.yml roles/docker_services/**/*.yml --format json > ansible-lint-output.json || true
+
+      - name: Check for Errors
+        id: check_errors
+        run: |
+          if [[ -s ansible-lint-output.json ]]; then
+            echo "Linting errors found."
+            echo "::set-output name=errors_found::true"
+          else
+            echo "No linting errors found."
+            echo "::set-output name=errors_found::false"
+          fi
 
       - name: Process Ansible Lint Output
-        if: failure() # Only run if previous step failed
+        if: steps.check_errors.outputs.errors_found == 'true'
         run: |
           python - <<EOF
 import json
@@ -57,7 +68,7 @@ for error in data:
     checklist += f"- [ ] **{error_type}**: {description} (File: {file_path}, Line: {line})\n"
 
 # Combine table and checklist with headings and <details> tags
-markdown = """
+markdown = f"""
 ### Linting Report
 
 <details>
@@ -73,20 +84,27 @@ markdown = """
 {checklist}
 
 </details>
-""".format(table=table, checklist=checklist)
+"""
 
 # Save the markdown output
 Path("ansible-lint-report.md").write_text(markdown)
 EOF
 
       - name: Create GitHub Issue for Linting Errors
-        if: failure()
+        if: steps.check_errors.outputs.errors_found == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          issue_title="Ansible Linting Errors Report - Run #${{ github.run_number }} - $(date "+%Y-%m-%d %H:%M:%S")"
+          issue_title="Ansible Linting Errors Report - Run #${{ github.run_number }} - $(date '+%Y-%m-%d %H:%M:%S')"
           issue_body=$(cat ansible-lint-report.md | sed ':a;N;$!ba;s/\n/\\n/g') # replaces newlines for API compatibility
 
-          curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+          response=$(curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
             -d "{\"title\": \"$issue_title\", \"body\": \"$issue_body\"}" \
-            https://api.github.com/repos/${{ github.repository }}/issues
+            https://api.github.com/repos/${{ github.repository }}/issues)
+
+          if [[ $? -ne 0 ]]; then
+            echo "Error creating GitHub issue."
+            exit 1
+          else
+            echo "GitHub issue created successfully."
+          fi
