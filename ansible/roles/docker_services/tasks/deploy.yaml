@@ -1,0 +1,15 @@
+- name: Esnure {{ service }} directory exists
+  file:
+    path: " {{ services[service].dir }}"
+    state: directory
+
+- name: Generate compose.yaml for {{ service }}
+  template:
+    src: "{{ template_path }}"
+    dest: "{{ services[service].dir }}/compose.yaml"
+
+- name: Deploy {{ service }} using docker_compose
+  community.docker.docker_compose:
+    project_src: "{{ services[service].dir }}"
+    pull: true
+    recreate: true

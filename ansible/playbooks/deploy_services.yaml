@@ -1,0 +1,10 @@
+- name: Deploy Docker services
+  hosts: []
+  vars:
+    service_list:
+      - espocrm
+      - radarr
+      - sonarr
+      - authentik
+  roles:
+    - docker_services

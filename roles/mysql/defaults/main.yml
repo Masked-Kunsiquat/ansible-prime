@@ -1,8 +1,0 @@
----
-# Default variables for mysql role
-mysql_db_root_password: root_password
-mysql_db_name: suitecrm
-mysql_db_user: suitecrm_user
-mysql_db_password: suitecrm_password
-mysql_file_owner: mysql
-mysql_file_group: mysql
