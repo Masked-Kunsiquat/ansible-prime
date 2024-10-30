@@ -3,14 +3,14 @@ import sys
 import os
 import requests
 
-# Access the GitHub token from environment variables
+# Access the GitHub token and repository details from environment variables
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO_OWNER = os.getenv("GITHUB_REPOSITORY_OWNER")  # Available in Actions context
-REPO_NAME = os.getenv("GITHUB_REPOSITORY").split('/')[-1]  # Extract repo name from GITHUB_REPOSITORY
+REPO_NAME = os.getenv("GITHUB_REPOSITORY").split('/')[1]  # Extract repo name from GITHUB_REPOSITORY
 
 def create_github_issue(title, body):
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/issues"
-    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    headers = {"Authorization": f"token {GITHUB_TOKEN}", "Accept": "application/vnd.github.v3+json"}
     issue = {"title": title, "body": body}
 
     response = requests.post(url, headers=headers, json=issue)
@@ -19,23 +19,43 @@ def create_github_issue(title, body):
         return False
     return True
 
+def format_lint_issues(issues):
+    formatted_issues = []
+    for issue in issues:
+        loc = issue['location']
+        line = loc['positions']['begin']['line'] if 'positions' in loc else 'unknown'
+        formatted_issues.append(f"- [ ] **{issue['check_name']}** at `{loc['path']}:{line}`: {issue['description']}\n")
+    return "\n".join(formatted_issues)
+
 def main(json_file):
     with open(json_file) as f:
-        issues = json.load(f)
+        lint_output = json.load(f)
 
-    for issue in issues:
-        title = f"{issue['check_name']} in {issue['location']['path']}"
-        body = f"**Description:** {issue['description']}\n"
+    if lint_output:
+        title = "Ansible Lint Issues"
+        body = "### Linting Errors\n\n"
+        body += "| Issue Type | Description | Location |\n"
+        body += "|------------|-------------|----------|\n"
 
-        # Check for positions
-        if 'positions' in issue['location']:
-            body += f"**Location:** {issue['location']['path']}:{issue['location']['positions']['begin']['line']}\n\n"
-        else:
-            body += f"**Location:** {issue['location']['path']}\n\n"
+        for issue in lint_output:
+            check_name = issue['check_name']
+            description = issue['description']
+            loc = issue['location']
+            line = loc['positions']['begin']['line'] if 'positions' in loc else 'unknown'
+            path = loc['path']
+            body += f"| {check_name} | {description} | `{path}:{line}` |\n"
+
+        body += "\n### Checklist\n\n"
+        body += format_lint_issues(lint_output)
 
         # Create the issue
         if not create_github_issue(title, body):
-            print(f"Error creating issue for: {title}")
+            print("Error creating the main issue for linting errors.")
+    else:
+        print("No issues found.")
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python create_issues.py <path to lint output>")
+        sys.exit(1)
     main(sys.argv[1])
