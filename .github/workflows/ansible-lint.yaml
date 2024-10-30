@@ -25,3 +25,5 @@ jobs:
       - name: Parse ansible-lint output and create issues
         run: |
           python scripts/create_issues.py ansible-lint-output.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided by GitHub Actions
