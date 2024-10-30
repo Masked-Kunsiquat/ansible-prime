@@ -1,5 +1,7 @@
 # My Ansible Project
 
+[![ansible-lint](https://github.com/Masked-Kunsiquat/ansible-prime/actions/workflows/ansible-lint.yaml/badge.svg?branch=main)](https://github.com/Masked-Kunsiquat/ansible-prime/actions/workflows/ansible-lint.yaml)
+
 This project automates the deployment and recovery of Docker services in a HomeLab environment.
 
 The setup is designed for ease of disaster recovery and overall management by deploying Docker services from scratch on a Proxmox-based infrastructure, with containers organized in LXCs. 
