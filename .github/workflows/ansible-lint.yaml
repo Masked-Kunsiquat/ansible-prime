@@ -26,7 +26,7 @@ jobs:
 
       - name: Run Ansible Lint and Save Output
         run: |
-          ansible-lint playbooks/*.yml roles/docker_services/**/*.yml --format json > ansible-lint-output.json || true
+          ansible-lint playbooks/*.yaml roles/docker_services/**/*.yaml --format json > ansible-lint-output.json || true
 
       - name: Check for Errors
         id: check_errors
