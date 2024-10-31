@@ -17,7 +17,7 @@ This project uses roles, templates, and variables to streamline the configuratio
    - Ansible Roles: Each Docker service is configured as a modular role, allowing services to be added or updated easily.
 
    - Jinja Templates: Each service has a dedicated `compose.yaml` template stored in the role's template directory.
-   
+
    - Dynamic Variables: Service directories, environment variables, and configurations are handled with variables - making it adaptable and reusable.
 
 ## Directory Structure
