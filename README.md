@@ -10,6 +10,7 @@ The setup is designed for ease of disaster recovery and overall management by de
 This project uses roles, templates, and variables to streamline the configuration, making it modular and scalable.
 
 ## Project Overview
+
 - Goal: Automate the setup and recovery of Docker services, ensuring that all configurations are stored with Ansible to facilitate a qucik rebuild if needed.
 - Primary Components:
    - Ansible Roles: Each Docker service is configured as a modular role, allowing services to be added or updated easily.
@@ -40,6 +41,7 @@ ansible/
 ```
 
 ## Key Files and Directories
+
 - `roles/docker_services/vars/main.yaml`: Combines variables for base paths, directories for each services, and the `template_path` variable for dynamic compose.yaml templates.
 - `roles/docker_services/templates/`: Stores Jinja templates for each service's compose.yaml, referenced dynamically with the `template_path` variable.
 - `roles/docker_services/tasks/deploy.yaml`: Ensures directories exist, creates compose.yaml files from templates, and deploys services using the [docker_compose](https://docs.ansible.com/ansible/latest/collections/community/docker/docker_compose_v2_module.html#ansible-collections-community-docker-docker-compose-v2-module) module.
@@ -47,7 +49,8 @@ ansible/
 
 ## Configuration and Usage
 ### Variables Setup
-Variables are defines in [`roles/docker_services/vars/main.yaml`](roles/docker_services/vars/main.yaml) including:
+Variables are defined in [`roles/docker_services/vars/main.yaml`](roles/docker_services/vars/main.yaml) including:
+
    - `docker_compose_base_path`: The base path where all Docker Compose service directories are stored.
    - `services`: A dictionary defining each service's directory, based on `docker_compose_base_path`.
    - `template_path`: A dynamic path for Jinja templates (e.g. `templates/{{ service }}/compose.yaml.j2`), allowing the role to select the correct template per service.
