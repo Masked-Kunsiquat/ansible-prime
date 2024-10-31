@@ -1,11 +1,11 @@
 # Base directory for all Docker Compose directories
-docker_compose_base_path: ""
+docker_services_docker_compose_base_path: ""
 
 # Path for templates
-template_path: "templates/{{ service }}-compose.yaml.j2"
+docker_services_template_path: "templates/{{ service }}-compose.yaml.j2"
 
 # Define directories for each service
-services:
+docker_services_services:
   espocrm:
     dir: "{{ docker_compose_base_path }}/espocrm"
   sonarr:

@@ -1,15 +1,17 @@
-- name: Esnure {{ service }} directory exists
-  file:
-    path: " {{ services[service].dir }}"
+- name: Ensure directory exists for {{ service }}
+  ansible.builtin.file:
+    path: "{{ services[service].dir }}"
     state: directory
+    mode: '0755'
 
-- name: Generate compose.yaml for {{ service }}
-  template:
+- name: Generate compose.yaml for Service {{ service }}
+  ansible.builtin.template:
     src: "{{ template_path }}"
     dest: "{{ services[service].dir }}/compose.yaml"
+    mode: '0644'
 
-- name: Deploy {{ service }} using docker_compose
-  community.docker.docker_compose:
+- name: Deploy using docker_compose for {{ service }}
+  community.docker.docker_compose_v2:
     project_src: "{{ services[service].dir }}"
-    pull: true
-    recreate: true
+    pull: policy
+    recreate: auto

@@ -1,5 +1,6 @@
 {
     "yaml.schemas": {
         "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json": "file:///workspaces/ansible-prime/ansible/roles/docker_services/tasks/deploy.yaml"
-    }
+    },
+    "ansible.python.interpreterPath": "/usr/local/python/current/bin/python3"
 }
