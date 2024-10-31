@@ -112,6 +112,7 @@ ansible-playbook playbooks/deploy_services.yaml -i inventory/hosts
 - `network.yaml`: Use this playbook to set up networking and proxies, such as configuring [NGINX Proxy Manager](https://nginxproxymanager.com/).
 
 # Notes
+
 - Modular Design: The structure is designed to be modular, allowing easy addition or modification of services.
 - Dynamic Templating: The `template_path` and `services` variables allow the role to adapt to multiple services with minimal configuration.
 - Ansible Vault: For sensitive information, it's recommended to use [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to securely manage environment variables and other sensitive configurations.
