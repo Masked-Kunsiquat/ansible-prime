@@ -1,5 +1,6 @@
 # My Ansible Project
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2ec0b176e7a9414088c9031d3a3eda87)](https://app.codacy.com/gh/Masked-Kunsiquat/ansible-prime?utm_source=github.com&utm_medium=referral&utm_content=Masked-Kunsiquat/ansible-prime&utm_campaign=Badge_Grade)
 [![ansible-lint](https://github.com/Masked-Kunsiquat/ansible-prime/actions/workflows/ansible-lint.yaml/badge.svg?branch=main)](https://github.com/Masked-Kunsiquat/ansible-prime/actions/workflows/ansible-lint.yaml)
 
 This project automates the deployment and recovery of Docker services in a HomeLab environment.
