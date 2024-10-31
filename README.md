@@ -13,8 +13,11 @@ This project uses roles, templates, and variables to streamline the configuratio
 
 - Goal: Automate the setup and recovery of Docker services, ensuring that all configurations are stored with Ansible to facilitate a qucik rebuild if needed.
 - Primary Components:
+
    - Ansible Roles: Each Docker service is configured as a modular role, allowing services to be added or updated easily.
+
    - Jinja Templates: Each service has a dedicated `compose.yaml` template stored in the role's template directory.
+   
    - Dynamic Variables: Service directories, environment variables, and configurations are handled with variables - making it adaptable and reusable.
 
 ## Directory Structure
@@ -43,8 +46,11 @@ ansible/
 ## Key Files and Directories
 
 - `roles/docker_services/vars/main.yaml`: Combines variables for base paths, directories for each services, and the `template_path` variable for dynamic compose.yaml templates.
+
 - `roles/docker_services/templates/`: Stores Jinja templates for each service's compose.yaml, referenced dynamically with the `template_path` variable.
+
 - `roles/docker_services/tasks/deploy.yaml`: Ensures directories exist, creates compose.yaml files from templates, and deploys services using the [docker_compose](https://docs.ansible.com/ansible/latest/collections/community/docker/docker_compose_v2_module.html#ansible-collections-community-docker-docker-compose-v2-module) module.
+
 - `playbooks/deploy_services.yaml`: Main playbook to deploy Docker services across hosts by calling the [docker_services](roles/docker_services/) role.
 
 ## Configuration and Usage
@@ -52,7 +58,9 @@ ansible/
 Variables are defined in [`roles/docker_services/vars/main.yaml`](roles/docker_services/vars/main.yaml) including:
 
    - `docker_compose_base_path`: The base path where all Docker Compose service directories are stored.
+
    - `services`: A dictionary defining each service's directory, based on `docker_compose_base_path`.
+
    - `template_path`: A dynamic path for Jinja templates (e.g. `templates/{{ service }}/compose.yaml.j2`), allowing the role to select the correct template per service.
 
    Example snippet in `vars/main.yaml`:
@@ -110,11 +118,13 @@ ansible-playbook playbooks/deploy_services.yaml -i inventory/hosts
 ## Additional Playbooks
 
 - `recovery.yaml`: Use this playbook for full recovery, deploying all services from scratch on a clean system.
+
 - `network.yaml`: Use this playbook to set up networking and proxies, such as configuring [NGINX Proxy Manager](https://nginxproxymanager.com/).
 
-# Notes
+## Notes
 
 - Modular Design: The structure is designed to be modular, allowing easy addition or modification of services.
-- Dynamic Templating: The `template_path` and `services` variables allow the role to adapt to multiple services with minimal configuration.
-- Ansible Vault: For sensitive information, it's recommended to use [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to securely manage environment variables and other sensitive configurations.
 
+- Dynamic Templating: The `template_path` and `services` variables allow the role to adapt to multiple services with minimal configuration.
+
+- Ansible Vault: For sensitive information, it's recommended to use [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to securely manage environment variables and other sensitive configurations.
