@@ -36,8 +36,7 @@ def main(json_file):
 
     for check_name, issues in grouped_issues.items():
         body += f"<details>\n<summary>{check_name} ({len(issues)})</summary>\n\n"
-        body += "| Description | Location |\n|-------------|----------|\n"
-     
+        body += "| Description | Location |\n|-------------|----------|\n" 
         for issue in issues:
             # Check for positions
             location = f"{issue['location']['path']}:{issue['location'].get('positions', {}).get('begin', {}).get('line', 'unknown')}"
@@ -52,6 +51,8 @@ def main(json_file):
         print("Error creating issue for linting errors.")
 
 if __name__ == "__main__":
+
+    
     if len(sys.argv) != 2:
         print("Usage: python create_issues.py <path to lint output>")
         sys.exit(1)
