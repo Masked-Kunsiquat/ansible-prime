@@ -1,6 +1,0 @@
-{
-    "ansible.python.interpreterPath": "/usr/local/bin/python3",
-    "yaml.schemas": {
-        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": "file:///Users/blainebryan/ansible-prime/ansible-prime/roles/suitecrm/tasks/install_packages.yaml"
-    }
-}
