@@ -108,6 +108,7 @@ Then execute the playbook:
 ansible-playbook playbooks/deploy_services.yaml -i inventory/hosts
 ```
 ## Additional Playbooks
+
 - `recovery.yaml`: Use this playbook for full recovery, deploying all services from scratch on a clean system.
 - `network.yaml`: Use this playbook to set up networking and proxies, such as configuring [NGINX Proxy Manager](https://nginxproxymanager.com/).
 

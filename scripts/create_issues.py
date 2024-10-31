@@ -37,7 +37,7 @@ def main(json_file):
     for check_name, issues in grouped_issues.items():
         body += f"<details>\n<summary>{check_name} ({len(issues)})</summary>\n\n"
         body += "| Description | Location |\n|-------------|----------|\n"
-        
+     
         for issue in issues:
             # Check for positions
             location = f"{issue['location']['path']}:{issue['location'].get('positions', {}).get('begin', {}).get('line', 'unknown')}"
