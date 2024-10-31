@@ -1,0 +1,77 @@
+diff --git a/README.md b/README.md
+--- a/README.md
++++ b/README.md
+@@ -12,1 +12,1 @@
+-## Project Overview
++## Project Overview
+
+@@ -13,1 +13,1 @@
+-- Goal: Automate the setup and recovery of Docker services, ensuring that all configurations are stored with Ansible to facilitate a qucik rebuild if needed.
++
+- Goal: Automate the setup and recovery of Docker services, ensuring that all configurations are stored with Ansible to facilitate a qucik rebuild if needed.
+@@ -15,1 +15,1 @@
+-   - Ansible Roles: Each Docker service is configured as a modular role, allowing services to be added or updated easily.
++  - Ansible Roles: Each Docker service is configured as a modular role, allowing services to be added or updated easily.
+@@ -16,1 +16,1 @@
+-   - Jinja Templates: Each service has a dedicated `compose.yaml` template stored in the role's template directory.
++  - Jinja Templates: Each service has a dedicated `compose.yaml` template stored in the role's template directory.
+@@ -17,1 +17,1 @@
+-   - Dynamic Variables: Service directories, environment variables, and configurations are handled with variables - making it adaptable and reusable.
++  - Dynamic Variables: Service directories, environment variables, and configurations are handled with variables - making it adaptable and reusable.
+@@ -19,1 +19,1 @@
+-## Directory Structure
++## Directory Structure
+
+@@ -42,1 +42,1 @@
+-## Key Files and Directories
++## Key Files and Directories
+
+@@ -43,1 +43,1 @@
+-- `roles/docker_services/vars/main.yaml`: Combines variables for base paths, directories for each services, and the `template_path` variable for dynamic compose.yaml templates.
++
+- `roles/docker_services/vars/main.yaml`: Combines variables for base paths, directories for each services, and the `template_path` variable for dynamic compose.yaml templates.
+@@ -48,1 +48,1 @@
+-## Configuration and Usage
++## Configuration and Usage
+
+@@ -49,1 +49,1 @@
+-### Variables Setup
++
+### Variables Setup
+@@ -51,1 +51,1 @@
+-   - `docker_compose_base_path`: The base path where all Docker Compose service directories are stored.
++
+   - `docker_compose_base_path`: The base path where all Docker Compose service directories are stored.
+@@ -52,1 +52,1 @@
+-   - `services`: A dictionary defining each service's directory, based on `docker_compose_base_path`.
++- `services`: A dictionary defining each service's directory, based on `docker_compose_base_path`.
+@@ -53,1 +53,1 @@
+-   - `template_path`: A dynamic path for Jinja templates (e.g. `templates/{{ service }}/compose.yaml.j2`), allowing the role to select the correct template per service.
++- `template_path`: A dynamic path for Jinja templates (e.g. `templates/{{ service }}/compose.yaml.j2`), allowing the role to select the correct template per service.
+@@ -69,1 +69,1 @@
+-### Main Task File
++### Main Task File
+
+@@ -89,1 +89,1 @@
+-## Deploying Services
++
+## Deploying Services
+@@ -107,1 +107,1 @@
+-## Additional Playbooks
++
+## Additional Playbooks
+@@ -108,1 +108,1 @@
+-- `recovery.yaml`: Use this playbook for full recovery, deploying all services from scratch on a clean system.
++
+- `recovery.yaml`: Use this playbook for full recovery, deploying all services from scratch on a clean system.
+@@ -111,1 +111,1 @@
+-# Notes
++# Notes
+
+@@ -112,1 +112,1 @@
+-- Modular Design: The structure is designed to be modular, allowing easy addition or modification of services.
++
+- Modular Design: The structure is designed to be modular, allowing easy addition or modification of services.
+@@ -116,1 +116,1 @@
+-- Ansible Vault: For sensitive information, it's recommended to use [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html) to securely manage environment variables and other sensitive configurations.
++
