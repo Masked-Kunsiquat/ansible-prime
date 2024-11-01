@@ -6,6 +6,7 @@ vault_password_file
 
 # Ignore generated files
 ansible.cfg
+./github/workflows/ansible-lint.yaml
 
 # Ignore logs
 *.log
