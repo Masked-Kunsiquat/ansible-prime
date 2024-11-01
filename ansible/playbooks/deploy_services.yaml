@@ -1,5 +1,5 @@
 - name: Deploy Docker services
-  hosts: []
+  hosts: all
   vars:
     service_list:
       - espocrm

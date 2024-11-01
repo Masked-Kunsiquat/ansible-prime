@@ -1,0 +1,13 @@
+# tasks/reboot.yaml
+- name: Check if reboot is required (Ubuntu/Debian only)
+  ansible.builtin.command: "needs-restarting -r"
+  register: reboot_check
+  failed_when: rebook_check.rc not in [0, 1]
+  changed_when: reboot_check.rc == 1
+  when: ansible_facts['os_family'] in ['Debian']
+
+- name: Reboot the machine
+  ansible.builtin.reboot:
+    msg: "System reboot due to package updates"
+    pre_reboot_delay: 10
+  when: reboot_check.changed or ansible_facts['os_family'] == 'Alpine'

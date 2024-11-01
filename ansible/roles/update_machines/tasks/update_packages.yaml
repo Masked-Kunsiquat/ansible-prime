@@ -1,0 +1,13 @@
+# tasks/update_packages.yaml
+- name: Get OS family
+  ansible.builtin.setup:
+    filter: ansible_os_family
+
+- name: Select update command
+  ansible.builtin.set_fact:
+    update_command: "{{ update_commands[ansible_facts['os_family'] | lower ~ ('_dist' if dist_upgrade else '')] }}"
+
+- name: Update packages on Ubuntu/Debian/Alpine
+  ansible.builtin.command: "{{ update_command }}"
+  register: update_result
+  changed_when: "'changed' in update_result.stdout"
