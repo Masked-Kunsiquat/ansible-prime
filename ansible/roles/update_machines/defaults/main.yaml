@@ -1,0 +1,16 @@
+# Define OS-specific package update commands
+update_machines_update_commands:
+  ubuntu: "apt-get update && apt-get -y upgrade"
+  ubuntu_dist: "apt-get update && apt-get -y dist-upgrade"
+
+  debian: "apt-get update && apt-get -y upgrade"
+  debian_dist: "apt-get update && apt-get -y dist-upgrade"
+
+  alpine: "apk update && apk upgrade --available"
+  alpine_dist: "apk update && apk upgrade --available"
+
+# Distribution/Package Update settings
+update_machines_dist_upgrade: false # Toggle to enable/disable dist-upgrade
+
+# Reboot settings
+update_machines_reboot_required: true # Enables reboot, if necessary
