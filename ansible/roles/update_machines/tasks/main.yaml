@@ -1,7 +1,12 @@
-# tasks/main.yaml
-- name: Include OS-specific update tasks/main.yaml
+---
+- name: Update system packages
   ansible.builtin.include_tasks:
-    update_packages.yaml
+    file: update_packages.yaml
+  tags:
+    - update
+    - packages
+  register: update_result
+  ignore_errors: true
 
 - name: Reboot machine if necessary
   ansible.builtin.include_tasks:

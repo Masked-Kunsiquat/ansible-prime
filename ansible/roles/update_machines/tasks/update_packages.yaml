@@ -5,7 +5,7 @@
 
 - name: Select update command
   ansible.builtin.set_fact:
-    update_command: "{{ update_commands[ansible_facts['os_family'] | lower ~ ('_dist' if dist_upgrade else '')] }}"
+    update_command: "{{ update_machines_update_commands[ansible_facts['os_family'] | lower ~ ('_dist' if update_machines_dist_upgrade else '')] }}"
 
 - name: Update packages on Ubuntu/Debian/Alpine
   ansible.builtin.command: "{{ update_command }}"
