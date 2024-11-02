@@ -5,7 +5,7 @@ This role updates packages on Ubuntu, Debian, and Alpine Linux systems and reboo
 
 - `update_commands`: OS-specific package update commands for both regular and dist-upgrade.
 
-- `dist_upgrade`: Set to `true` to perform a dist-upgrade (default: `false `).
+- `dist_upgrade`: Set to `true` to perform a dist-upgrade (default: `false`).
 
 - `reboot_required`: Set to `true` to reboot if updates were applied (default: `true`).
 
