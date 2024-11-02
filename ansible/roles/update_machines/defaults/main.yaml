@@ -1,10 +1,16 @@
 # Define OS-specific package update commands
 update_machines_update_commands:
   ubuntu: "apt-get update && apt-get -y upgrade"
-  ubuntu_dist: "DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" dist-upgrade"
+  ubuntu_dist: >-
+    DEBIAN_FRONTEND=noninteractive apt-get update && 
+    apt-get -y -o Dpkg::Options::="--force-confdef"
+    -o Dpkg::Options::="--force-confold" dist-upgrade
 
   debian: "apt-get update && apt-get -y upgrade"
-  debian_dist: "DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\" dist-upgrade"
+  debian_dist: >-
+    DEBIAN_FRONTEND=noninteractive apt-get update && 
+    apt-get -y -o Dpkg::Options::="--force-confdef"
+    -o Dpkg::Options::="--force-confold" dist-upgrade
 
   alpine: "apk update && apk upgrade --available"
   alpine_dist: "apk update && apk upgrade --available && apk fix"
