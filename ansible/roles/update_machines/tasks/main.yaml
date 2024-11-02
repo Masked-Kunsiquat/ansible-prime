@@ -1,0 +1,14 @@
+---
+- name: Update system packages
+  ansible.builtin.include_tasks:
+    file: update_packages.yaml
+  tags:
+    - update
+    - packages
+  register: update_result
+  ignore_errors: true
+
+- name: Reboot machine if necessary
+  ansible.builtin.include_tasks:
+    reboot.yaml
+  when: reboot_required
