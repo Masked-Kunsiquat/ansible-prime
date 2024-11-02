@@ -1,6 +1,6 @@
 # My Ansible Project
 
-[![ansible-lint](https://github.com/Masked-Kunsiquat/ansible-prime/actions/workflows/ansible-lint.yaml/badge.svg?branch=main)](https://github.com/Masked-Kunsiquat/ansible-prime/actions/workflows/ansible-lint.yaml)
+# [![ansible-lint](https://github.com/Masked-Kunsiquat/ansible-prime/actions/workflows/ansible-lint.yaml/badge.svg?branch=main)](https://github.com/Masked-Kunsiquat/ansible-prime/actions/workflows/ansible-lint.yaml)
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b73e8e8d98f04af99429c768e24f835a)](https://app.codacy.com/gh/Masked-Kunsiquat/ansible-prime/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
