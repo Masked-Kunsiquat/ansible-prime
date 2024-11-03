@@ -27,6 +27,15 @@
     state: started
     enabled: true
 
-- name: Create MongoDB database
-  ansible.builtin.command: mongo --eval 'db.getSiblingDB("ssm").createCollection("dummy")'
-  changed_when: false  # This command should not change the state if the database already exists
+- name: Configure MongoDB to listen on the specified port
+  ansible.builtin.command: mongo --eval 'db.getSiblingDB("{{ ssm_dockerless_.mongodb.db_name }}").createCollection("dummy")'
+  changed_when: false  # Prevents this task from showing as changed if the collection already exists
+
+- name: Set MongoDB environment variables
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/mongodb_env.sh
+    line: "{{ item }}"
+    state: present
+  loop:
+    - "DB_NAME={{ ssm_dockerless_.mongodb.db_name }}"
+    - "DB_PORT={{ ssm_dockerless_.mongodb.db_port }}"

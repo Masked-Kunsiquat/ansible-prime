@@ -1,0 +1,45 @@
+# tasks/init.yaml
+
+- name: Start Squirrel Servers Manager
+  block:
+    - name: Set up pm2 to start on boot
+      ansible.builtin.command: pm2 startup
+      args:
+        creates: /etc/systemd/system/pm2-*.service  # Adjust based on your system
+      register: pm2_startup_output
+      changed_when: pm2_startup_output.stdout != ""  # Only mark as changed if there is output
+
+    - name: Save pm2 process list
+      ansible.builtin.shell: pm2 save
+      args:
+        warn: false  # Suppress warnings
+      register: pm2_save_output
+      changed_when: pm2_save_output.stdout != ""  # Only mark as changed if there is output
+
+    - name: Prepare Nginx directory
+      ansible.builtin.file:
+        path: /usr/share/nginx/html/
+        state: directory
+        mode: '0755'
+
+    - name: Copy custom HTML for Nginx
+      ansible.builtin.copy:
+        src: "{{ ssm_dockerless_.server.install_dir }}/proxy/www/index.html"
+        dest: /usr/share/nginx/html/custom.html
+        mode: '0644'
+
+    - name: Start Nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Check if Nginx is in the default runlevel
+      ansible.builtin.command: "rc-update show"
+      register: rc_update_output
+
+    - name: Ensure Nginx is added to the default runlevel
+      ansible.builtin.command: "rc-update add nginx default"
+      when: "'nginx' not in rc_update_output.stdout"
+
+  when: ansible_facts['os_family'] == "Linux"  # Optional condition, modify as needed

@@ -1,0 +1,63 @@
+# tasks/build.yaml
+
+- name: Build Squirrel Servers Manager Library
+  block:
+    - name: Install npm dependencies
+      community.general.npm:
+        state: present
+        path: "{{ ssm_dockerless_.server.install_dir }}/shared-lib"
+        executable: npm
+        command: ci
+
+    - name: Build the library
+      community.general.npm:
+        state: present
+        path: "{{ ssm_dockerless_.server.install_dir }}/shared-lib"
+        executable: npm
+        command: run build
+
+  when: ansible_facts['os_family'] == "Linux"  # Optional condition, modify as needed
+
+- name: Build and Run Squirrel Servers Manager Client
+  block:
+    - name: Install npm dependencies for client
+      community.general.npm:
+        state: present
+        path: "{{ ssm_dockerless_.server.install_dir }}/client"
+        command: ci
+
+    - name: Build the client
+      community.general.npm:
+        state: present
+        path: "{{ ssm_dockerless_.server.install_dir }}/client"
+        command: run build
+
+    - name: Start the client using pm2
+      community.general.npm:
+        state: present
+        path: "{{ ssm_dockerless_.server.install_dir }}/client"
+        command: start --name="squirrelserversmanager-frontend" npm -- run serve
+
+  when: ansible_facts['os_family'] == "Linux"  # Optional condition, modify as needed
+
+- name: Build and Run Squirrel Servers Manager Server
+  block:
+    - name: Install npm dependencies for server
+      community.general.npm:
+        state: present
+        path: "{{ ssm_dockerless_.server.install_dir }}/server"
+        command: ci
+
+    - name: Build the server
+      community.general.npm:
+        state: present
+        path: "{{ ssm_dockerless_.server.install_dir }}/server"
+        command: run build
+
+    - name: Start the server using pm2
+      community.general.npm:
+        state: present
+        path: {{ ssm_dockerless_.server.install_dir }}/server
+        command: start --name="squirrelserversmanager-backend" node -- ./dist/src/index.js
+
+  when: ansible_facts['os_family'] == "Linux"  # Optional condition, modify as needed

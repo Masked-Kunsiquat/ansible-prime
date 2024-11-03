@@ -1,7 +1,7 @@
 # templates/nginx.conf.j2
 
 server {
-    listen {{ nginx_port }};
+    listen {{ ssm_dockerless_.nginx.port }};
     server_name localhost;
     access_log off;
     error_log off;

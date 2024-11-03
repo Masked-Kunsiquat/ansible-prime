@@ -1,25 +1,29 @@
 # tasks/main.yaml
 
-- name: Install SSM Dependencies
+- name: Install Required Packages
   ansible.builtin.include_tasks:
-    install_deps.yaml
+    install_verify_packages.yaml
 
-- name: Verify Dependencies were Installed
+- name: Install and configure Redis and NGINX
   ansible.builtin.include_tasks:
-    verify_installs.yaml
+    redis_nginx.yaml
 
-- name: Configure NGINX
+- name: Install MongoDB
   ansible.builtin.include_tasks:
-    nginx.yaml
+    mongodb.yaml
 
-- name: Clone Squirrel Servers Manager Repository
-  ansible.builtin.include_tasks:
-    clone_repo.yaml
-
-- name: Build SSM frontend and backend
-  ansible.builtin.include_tasks:
-    build_frontend_backend.yaml
-
-- name: Start Squirrel Servers Manager
+- name: Start MongoDB and Redis
   ansible.builtin.include_tasks:
     start_services.yaml
+
+- name: Set Up SSM
+  ansible.builtin.include_tasks:
+    setup_ssm.yaml
+
+- name: Build SSM Backend and Frontend
+  ansible.builtin.include_role:
+    build.yaml
+
+- name: Start Squirrel Severs Manager
+  ansible.builtin.include_tasks:
+    init.yaml
