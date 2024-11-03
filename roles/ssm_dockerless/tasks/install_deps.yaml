@@ -1,0 +1,44 @@
+# tasks/install_deps.yaml
+
+- name: Update package list
+  ansible.builtin.apk:
+    update_cache: true
+
+- name: Install essential packages
+  ansible.builtin.apk:
+    name:
+      - git
+      - curl
+      - openssh
+      - sshpass
+      - sudo
+      - nmap
+    state: present
+
+- name: Install development tools
+  ansible.builtin.apk:
+    name:
+      - nodejs
+      - npm
+      - py3-pip
+      - expect
+      - gcompat
+      - newt
+    state: present
+
+- name: Install caching services
+  ansible.builtin.apk:
+    name:
+      - redis
+    state: present
+
+- name: Install web server
+  ansible.builtin.apk:
+    name: nginx
+    state: present
+
+- name: Ensure all packages are installed
+  ansible.builtin.apk:
+    name:
+      - ansible
+    state: present

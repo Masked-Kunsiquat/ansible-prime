@@ -1,0 +1,18 @@
+# defaults/main.yaml
+
+# SSM server configuration
+ssm_dockerless_:
+  server:
+    repo_url: "https://github.com/SquirrelCorporation/SquirrelServersManager.git"
+    repo_version: "v0.1.21"
+    install_dir: "/opt/ssm"
+    backend_start_cmd: "pm2 start server.js --name 'squirrel_backend'"
+
+# NGINX configuration
+  nginx:
+    port: '80'
+    config_dir: "/etc/nginx/http.d/default.conf"
+
+# MongoDB configuration
+  mongodb:
+    db_path: "/var/lib/mongodb"

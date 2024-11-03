@@ -1,0 +1,14 @@
+# tasks/start_services.yaml
+
+- name: Install pm2 globally
+  ansible.builtin.npm:
+    name: pm2
+    global: true
+  become: true
+
+- name: Start Squirrel Servers Manager backend
+  community.general.pm2:
+    name: 'squirrel_backend'
+    script: 'server.js'
+    chdir: "{{ ssm_dockerless_.server.install_dir }}"
+    state: present

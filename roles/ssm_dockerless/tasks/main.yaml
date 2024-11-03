@@ -1,0 +1,25 @@
+# tasks/main.yaml
+
+- name: Install SSM Dependencies
+  ansible.builtin.include_tasks:
+    install_deps.yaml
+
+- name: Verify Dependencies were Installed
+  ansible.builtin.include_tasks:
+    verify_installs.yaml
+
+- name: Configure NGINX
+  ansible.builtin.include_tasks:
+    nginx.yaml
+
+- name: Clone Squirrel Servers Manager Repository
+  ansible.builtin.include_tasks:
+    clone_repo.yaml
+
+- name: Build SSM frontend and backend
+  ansible.builtin.include_tasks:
+    build_frontend_backend.yaml
+
+- name: Start Squirrel Servers Manager
+  ansible.builtin.include_tasks:
+    start_services.yaml

@@ -5,7 +5,6 @@
 vault_password_file
 
 # Ignore generated files
-ansible.cfg
 ./github/workflows/ansible-lint.yaml
 
 # Ignore logs
@@ -28,7 +27,3 @@ Thumbs.db
 # Ignore default main.yml from each role (TWO-levels deep)
 # roles/*/*/defaults/main.yml
 .ansible/*
-prox-inventory
-proxmox.yml
-proxmox.yml.bk
-playbooks/suitecrm-secure-install.yaml

@@ -1,0 +1,5 @@
+- name: Install Squirrel Servers Manager
+  hosts: all
+  roles:
+    - ssm_dockerless
+  become: true

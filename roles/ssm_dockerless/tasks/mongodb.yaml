@@ -1,0 +1,32 @@
+# tasks/mongodb.yaml
+
+- name: Ensure required repositories are present
+  ansible.builtin.lineinfile:
+    path: /etc/apk/repositories
+    line: "{{ item }}"
+    state: present
+  loop:
+    - 'http://dl-cdn.alpinelinux.org/alpine/v3.9/main'
+    - 'http://dl-cdn.alpinelinux.org/alpine/v3.9/community'
+  notify: Update APK cache
+
+- name: Update APK package list
+  community.general.apk:
+    update_cache: true
+
+- name: Install MongoDB and MongoDB tools
+  community.general.apk:
+    name:
+      - mongodb
+      - mongodb-tools
+    state: present
+
+- name: Ensure MongoDB is started and enabled
+  ansible.builtin.service:
+    name: mongodb
+    state: started
+    enabled: true
+
+- name: Create MongoDB database
+  ansible.builtin.command: mongo --eval 'db.getSiblingDB("ssm").createCollection("dummy")'
+  changed_when: false  # This command should not change the state if the database already exists
