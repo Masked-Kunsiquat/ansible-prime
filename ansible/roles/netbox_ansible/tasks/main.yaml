@@ -1,0 +1,17 @@
+---
+- name: Populate NetBox
+  hosts: []
+  gather_facts: no
+  vars:
+    netbox_url: "{{ lookup('ENV', 'NETBOX_URL') }}"
+    netbox_token: "{{ lookup('ENV', 'NETBOX_API_KEY') }}"
+
+  tasks:
+    - name: "Include setup tasks"
+      ansible_builtin.include_tasks: setup_tasks.yaml
+
+    - name: "Include device tasks"
+      ansible_builtin.include_tasks: device_tasks.yaml
+
+    - name: "Include IP tasks"
+      ansible_builtin.include_tasks: ip_tasks.yaml

@@ -1,0 +1,49 @@
+---
+# Sites in HomeLab
+site_list:
+  - name: "HomeLab"
+    time_zone: America/New_York
+    status: Active
+    
+manufacturers:
+  - Bmax
+  - Lenovo
+  - Terramaster
+  - TP-Link
+  
+device_types:    
+  - model: "B2 S Mini PC N4020C"
+    manufacturer: "BMax"
+    slug: "b2s-mini-pc"
+    part_number: "n4020c"
+    Full_depth: False
+    
+  - model: "ThinkCentre M93P"
+    manufacturer: "Lenovo"
+    slug: "thinkcentre-m93p"
+    part_number: "m93p"
+    Full_depth: False
+    
+  - model: "F4-423"
+    manufacturer: "Terramaster"
+    slug: "f4-423"
+    part_number: "f4-423"
+    Full_depth: False    
+  
+  - model: "TL-SG105"
+    manufacturer: "TP-Link"
+    slug: "tl-sg105"
+    part_number: "tl-sg105"
+    Full_depth: False
+    
+ platforms:
+  - name: "Proxmox"
+    slug: "proxmox"
+  - name: "TrueNAS Scale"
+    slug: "truenas-scale"
+  - name: "Ubuntu"
+    slug: "ubuntu"
+  - name: "Debian"
+    slug: "debian"
+  - name: "Alpine-Linux"
+    slug: "alpine"
