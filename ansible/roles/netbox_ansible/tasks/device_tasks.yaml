@@ -1,19 +1,31 @@
 ---
 - name: "TASK 100: NETBOX >> ADD DEVICE TO NETBOX"
-  netbox.netbox.netbox_device:
-    netbox_url: "{{ netbox_url }}"
-    netbox_token: "{{ netbox_token }}"
-    data:
-      name: "{{ inventory_hostname }}"
-      device_type: "{{ hostvars[inventory_hostname]['device_type'] }}"
-      platform: "{{ hostvars[inventory_hostname]['platform'] }}"
-      serial: "{{ ansible_facts['net_serialnum'] | default('N/A') }}"
-      status: Active
-      device_role: "{{ hostvars[inventory_hostname]['role'] }}"
-      site: "{{ hostvars[inventory_hostname]['site'] }}"
-      custom_fields:
-        code_version: "{{ ansible_facts['net_version'] | default('N/A') }}"
-
+  block:
+    - name: "Validate required variables"
+      assert:
+        that:
+          - hostvars[inventory_hostname]['device_type'] is defined
+          - hostvars[inventory_hostname]['platform'] is defined
+          - hostvars[inventory_hostname]['role'] is defined
+          - hostvars[inventory_hostname]['site'] is defined
+        fail_msg: "Missing required variables for device creation"
+    netbox.netbox.netbox_device:
+      netbox_url: "{{ netbox_url }}"
+      netbox_token: "{{ netbox_token }}"
+      data:
+        name: "{{ inventory_hostname }}"
+        device_type: "{{ hostvars[inventory_hostname]['device_type'] }}"
+        platform: "{{ hostvars[inventory_hostname]['platform'] }}"
+        serial: "{{ ansible_facts['net_serialnum'] | default('N/A') }}"
+        status: Active
+        device_role: "{{ hostvars[inventory_hostname]['role'] }}"
+        site: "{{ hostvars[inventory_hostname]['site'] }}"
+        custom_fields:
+          code_version: "{{ ansible_facts['net_version'] | default('N/A') }}"
+  rescue:
+    - name: "Handle NetBox API failure"
+      fail:
+        msg: "Failed to create device in NetBox: {{ ansible_failed_result }}"
 - name: "TASK 110: NETBOX >> ADD INTERFACES TO NETBOX"
   netbox.netbox.netbox_device_interface:
     netbox_url: "{{ netbox_url }}"

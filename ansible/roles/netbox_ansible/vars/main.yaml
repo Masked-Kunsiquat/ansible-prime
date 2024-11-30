@@ -6,7 +6,7 @@ site_list:
     status: Active
     
 manufacturers:
-  - Bmax
+  - BMax
   - Lenovo
   - Terramaster
   - TP-Link
@@ -16,25 +16,25 @@ device_types:
     manufacturer: "BMax"
     slug: "b2s-mini-pc"
     part_number: "n4020c"
-    Full_depth: False
+    full_depth: False
     
   - model: "ThinkCentre M93P"
     manufacturer: "Lenovo"
     slug: "thinkcentre-m93p"
     part_number: "m93p"
-    Full_depth: False
+    full_depth: False
     
   - model: "F4-423"
     manufacturer: "Terramaster"
     slug: "f4-423"
     part_number: "f4-423"
-    Full_depth: False    
+    full_depth: False    
   
   - model: "TL-SG105"
     manufacturer: "TP-Link"
     slug: "tl-sg105"
     part_number: "tl-sg105"
-    Full_depth: False
+    full_depth: False
     
  platforms:
   - name: "Proxmox"

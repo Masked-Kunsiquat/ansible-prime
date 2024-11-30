@@ -1,11 +1,12 @@
 ---
 - name: "TASK 10: SETUP SITES"
-    netbox.netbox.netbox_site:
-      netbox_url: "{{ netbox_url }}"
-      netbox_token: "{{ netbox_token }}"
-      data: "{{ item }}"
-    loop: "{{ site_list }}"
-
+  netbox.netbox.netbox_site:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_token }}"
+    data: "{{ item }}"
+  loop: "{{ site_list }}"
+  loop_control:
+    label: "{{ item.name }}"
 - name: "TASK 20: SETUP MANUFACTURERS"
   netbox.netbox.netbox_manufacturer:
     netbox_url: "{{ netbox_url }}"
@@ -25,14 +26,14 @@
       manufacturer: "{{ device_type.manufacturer }}"
       slug: "{{ device_type.slug }}"
       part_number: "{{ device_type.part_number }}"
-      is_full_depth: "{{ device.type_full_depth }}"
+      is_full_depth: "{{ device.type.full_depth }}"
   loop: "{{ device_types }}"
   loop_control:
     loop_var: device_type
     label: "{{ device_type['model'] }}"
       
 - name: "TASK 40: SETUP PLATFORMS"
-  netbox.netbox.netbox_manufacturer:
+  netbox.netbox.netbox_platform:
     netbox_url: "{{ netbox_url }}"
     netbox_token: "{{ netbox_token }}"
     data:
