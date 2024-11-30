@@ -9,6 +9,6 @@
         ]
       }
     },
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3 python3-pip && sudo apt-get install -y ansible"
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3 python3-pip && python3 -m pip install ansible && echo 'export ANSIBLE_CONFIG=/workspaces/ansible-prime/ansible.cfg' >> ~/.bashrc"
   }
   
