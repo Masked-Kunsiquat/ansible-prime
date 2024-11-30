@@ -1,13 +1,14 @@
 {
     "image": "mcr.microsoft.com/devcontainers/universal:2",
-    "features": {
-    },
+    "features": {},
     "customizations": {
-        "vscode": {
-            "extensions": [
-                "redhat.ansible",
-                "ms-azuretools.vscode-docker"
-            ]
-        }
-    }
+      "vscode": {
+        "extensions": [
+          "redhat.ansible",
+          "ms-azuretools.vscode-docker"
+        ]
+      }
+    },
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3 python3-pip && sudo apt-get install -y ansible"
   }
+  
