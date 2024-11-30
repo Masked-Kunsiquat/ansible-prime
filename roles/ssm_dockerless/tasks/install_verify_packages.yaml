@@ -1,0 +1,45 @@
+# tasks/install_and_verify_packages.yaml
+
+- name: Install required packages and verify installations
+  when: ansible_distribution == "Alpine" and ansible_distribution_version is version('3.19', '>=')
+  block:
+    - name: Install required packages
+      community.general.apk:
+        name:
+          - git
+          - nodejs
+          - npm
+          - ansible
+          - nmap
+          - sudo
+          - openssh
+          - sshpass
+          - py3-pip
+          - expect
+          - libcurl
+          - gcompat
+          - curl
+          - newt
+        state: present
+
+    - name: Verify Git installation
+      ansible.builtin.command: "git --version"
+      register: git_version
+      changed_when: false
+
+    - name: Verify Node.js installation
+      ansible.builtin.command: "node --version"
+      register: node_version
+      changed_when: false
+
+    - name: Verify NPM installation
+      ansible.builtin.command: "npm --version"
+      register: npm_version
+      changed_when: false
+
+    - name: Output verification results
+      ansible.builtin.debug:
+        msg:
+          - "Git version: {{ git_version.stdout }}"
+          - "Node.js version: {{ node_version.stdout }}"
+          - "NPM version: {{ npm_version.stdout }}"

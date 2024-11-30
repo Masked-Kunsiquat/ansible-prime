@@ -1,0 +1,13 @@
+# tasks/start_services.yaml
+
+- name: Ensure Redis service is started and enabled
+  ansible.builtin.service:
+    name: redis
+    state: started
+    enabled: true
+
+- name: Ensure MongoDB service is started and enabled
+  ansible.builtin.service:
+    name: mongodb
+    state: started
+    enabled: true

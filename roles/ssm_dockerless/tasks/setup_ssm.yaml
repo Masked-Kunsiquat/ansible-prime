@@ -1,0 +1,47 @@
+# tasks/setup_ssm.yaml
+
+- name: Clone the Squirrel Servers Manager repository
+  ansible.builtin.git:
+    repo: "{{ ssm_dockerless_.server.repo_url }}"
+    dest: "{{ ssm_dockerless_.server.install_dir }}"
+    version: "{{ ssm_dockerless_.server.repo_version }}"  # Specify the version to check out
+
+    update: true
+
+- name: Generate random secrets
+  ansible.builtin.set_fact:
+    secret: "{{ lookup('pipe', 'openssl rand -base64 32') }}"
+    salt: "{{ lookup('pipe', 'openssl rand -base64 16') }}"
+    vault_pwd: "{{ lookup('pipe', 'openssl rand -base64 32') }}"
+
+- name: Create environment file
+  ansible.builtin.copy:
+    dest: "{{ ssm_dockerless_.server.install_dir }}/.env"
+    content: |
+      # SECRETS
+      SECRET={{ secret }}
+      SALT={{ salt }}
+      VAULT_PWD={{ vault_pwd }}
+      # MONGO
+      DB_HOST=127.0.0.1
+      DB_NAME={{ ssm_dockerless_.mongodb.db_name | default('ssm') }}
+      DB_PORT={{ ssm_dockerless_.mongodb.db_port | default(27017) }}
+      # REDIS
+      REDIS_HOST=127.0.0.1
+      REDIS_PORT=6379
+    mode: '0600'
+
+- name: Ensure NODE_ENV environment variable is set
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/node_env.sh
+    line: 'export NODE_ENV=production'
+    state: present
+
+- name: Install global npm packages
+  community.general.npm:
+    name:
+      - npm@latest
+      - "@umijs/max"
+      - typescript
+      - pm2
+    global: true

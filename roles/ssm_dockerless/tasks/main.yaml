@@ -1,0 +1,29 @@
+# tasks/main.yaml
+
+- name: Install Required Packages
+  ansible.builtin.include_tasks:
+    install_verify_packages.yaml
+
+- name: Install and configure Redis and NGINX
+  ansible.builtin.include_tasks:
+    redis_nginx.yaml
+
+- name: Install MongoDB
+  ansible.builtin.include_tasks:
+    mongodb.yaml
+
+- name: Start MongoDB and Redis
+  ansible.builtin.include_tasks:
+    start_services.yaml
+
+- name: Set Up SSM
+  ansible.builtin.include_tasks:
+    setup_ssm.yaml
+
+- name: Build SSM Backend and Frontend
+  ansible.builtin.include_role:
+    build.yaml
+
+- name: Start Squirrel Severs Manager
+  ansible.builtin.include_tasks:
+    init.yaml

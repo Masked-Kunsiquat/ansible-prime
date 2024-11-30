@@ -1,0 +1,16 @@
+# handlers/main.yaml
+
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: Restart redis
+  ansible.builtin.service:
+    name: redis
+    state: restarted
+
+- name: Restart mongodb
+  ansible.builtin.service:
+    name: mongodb
+    state: restarted
