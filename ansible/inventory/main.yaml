@@ -1,0 +1,25 @@
+---
+all:
+  children:
+    homelab:
+      hosts:
+        proxmox:
+          ansible_host: 10.0.0.180
+          device_type: "ThinkCentre M93P"
+          platform: "Proxmox"
+          site: "HomeLab"
+          role: "Hypervisor"
+        
+        truenas:
+          ansible_host: 10.0.0.66
+          device_type: "F4-423"
+          platform: "TrueNAS Scale"
+          site: "HomeLab"
+          role: "NAS"
+          
+        apollo:
+          ansible_host: 10.0.0.36
+          device_type: "B2 S Mini PC N4020C"
+          platform: "Ubuntu"
+          site: "HomeLab"
+          role: "Dev Server"
