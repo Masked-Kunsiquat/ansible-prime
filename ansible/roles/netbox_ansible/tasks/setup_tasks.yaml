@@ -7,6 +7,8 @@
   loop: "{{ site_list }}"
   loop_control:
     label: "{{ item.name }}"
+  no_log: true
+
 - name: "TASK 20: SETUP MANUFACTURERS"
   netbox.netbox.netbox_manufacturer:
     netbox_url: "{{ netbox_url }}"
@@ -16,6 +18,7 @@
   loop: "{{ manufacturers }}"
   loop_control:
     loop_var: manufacturer
+  no_log: true
       
 - name: "TASK 30: SETUP DEVICE TYPES"
   netbox.netbox.netbox_device_type:
@@ -31,6 +34,7 @@
   loop_control:
     loop_var: device_type
     label: "{{ device_type['model'] }}"
+  no_log: true
       
 - name: "TASK 40: SETUP PLATFORMS"
   netbox.netbox.netbox_platform:
@@ -43,3 +47,4 @@
   loop_control:
     loop_var: platform
     label: "{{ platform['name'] }}"
+  no_log: true

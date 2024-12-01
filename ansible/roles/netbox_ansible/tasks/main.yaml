@@ -1,12 +1,12 @@
----
 - name: Populate NetBox
   hosts: []
-  gather_facts: no
+  gather_facts: false
   vars:
     netbox_url: "{{ lookup('ENV', 'NETBOX_URL') }}"
     netbox_token: "{{ lookup('ENV', 'NETBOX_API_KEY') }}"
 
   tasks:
+    block:
     - name: "Include setup tasks"
       ansible_builtin.include_tasks: setup_tasks.yaml
 

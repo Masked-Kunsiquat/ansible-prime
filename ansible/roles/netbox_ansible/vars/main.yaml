@@ -1,42 +1,42 @@
 ---
 # Sites in HomeLab
-site_list:
+netbox_ansible_site_list:
   - name: "HomeLab"
     time_zone: America/New_York
-    status: Active
-    
-manufacturers:
+    status: active
+
+netbox_ansible_manufacturers:
   - BMax
   - Lenovo
   - Terramaster
   - TP-Link
-  
-device_types:    
+
+netbox_ansible_device_types:
   - model: "B2 S Mini PC N4020C"
     manufacturer: "BMax"
     slug: "b2s-mini-pc"
     part_number: "n4020c"
-    full_depth: False
-    
+    full_depth: false
+
   - model: "ThinkCentre M93P"
     manufacturer: "Lenovo"
     slug: "thinkcentre-m93p"
     part_number: "m93p"
-    full_depth: False
-    
+    full_depth: false
+
   - model: "F4-423"
     manufacturer: "Terramaster"
     slug: "f4-423"
     part_number: "f4-423"
-    full_depth: False    
-  
+    full_depth: false
+
   - model: "TL-SG105"
     manufacturer: "TP-Link"
     slug: "tl-sg105"
     part_number: "tl-sg105"
-    full_depth: False
-    
- platforms:
+    full_depth: false
+
+netbox_ansible_platforms:
   - name: "Proxmox"
     slug: "proxmox"
   - name: "TrueNAS Scale"
