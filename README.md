@@ -86,4 +86,4 @@ We welcome contributions! Please check out [`CONTRIBUTING.md`](CONTRIBUTING.md) 
 - Run `npx semantic-release` to generate new releases.
 
 ## 📜 License
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](../blob/main/LICENSE).
