@@ -3,7 +3,8 @@ name: Bug Report
 about: Report a problem with the Ansible playbooks or roles
 title: "[Bug]: "
 labels: bug
-assignees: blaine
+assignees: ''
+
 ---
 
 ## 🐛 Bug Description

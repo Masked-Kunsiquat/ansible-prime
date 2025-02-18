@@ -3,7 +3,8 @@ name: Feature Request
 about: Suggest an enhancement to the Ansible playbooks or roles
 title: "[Feature]: "
 labels: enhancement
-assignees: blaine
+assignees: Masked-Kunsiquat
+
 ---
 
 ## 🚀 Feature Request
