@@ -128,15 +128,23 @@ ansible-playbook -i inventory/hosts playbooks/deploy-service.yml --extra-vars "s
 
 ### Organization Structure
 - **Vault**: "HomeLab" (dedicated vault for homelab secrets)
-- **Naming Convention**: `{SERVICE}_{PURPOSE}` (e.g., SONARR_API_KEY, SONARR_DB_PASS)
-- **Lookup Pattern**: `"{{ lookup('community.general.onepassword', 'SECRET_NAME', vault='HomeLab') }}"`
+- **Item Structure**: One item per service with multiple fields (e.g., `sonarr` item with `api_key`, `db_password` fields)
+- **Lookup Pattern**: `"{{ lookup('community.general.onepassword', 'service-name', field='field_name', vault='HomeLab') }}"`
 
 ### Template Integration
 ```yaml
-# In Jinja templates
-SONARR_API_KEY={{ lookup('community.general.onepassword', 'SONARR_API_KEY', vault='HomeLab') }}
-DB_PASSWORD={{ lookup('community.general.onepassword', 'SONARR_DB_PASS', vault='HomeLab') }}
+# In Jinja templates - single item with multiple fields
+SONARR_API_KEY={{ lookup('community.general.onepassword', 'sonarr', field='api_key', vault=onepassword_vault) }}
+DB_PASSWORD={{ lookup('community.general.onepassword', 'sonarr', field='db_password', vault=onepassword_vault) }}
+
+# For services with multiple instances, use item_name override:
+API_KEY={{ lookup('community.general.onepassword', config.item_name | default('sonarr'), field='api_key', vault=onepassword_vault) }}
 ```
+
+### 1Password Item Standards
+- **Item name**: Match service name (lowercase, hyphenated: `nginx-proxy-manager`, `ddns-updater`)
+- **Field names**: Descriptive, lowercase with underscores (`api_key`, `db_password`, `zone_id`)
+- **Multiple instances**: Create separate items (`sonarr-4k`, `radarr-anime`) or use `item_name` parameter
 
 ## Service Deployment Patterns
 
@@ -184,6 +192,12 @@ roles/sonarr/
 - Service roles work across platforms (LXC, Docker, bare metal)
 - Configuration driven by variables and templates
 - Easy to add new services or platforms
+
+### Secret Management Standards
+- **One item per service**: Each service gets a single 1Password item (e.g., `sonarr`, `ddns-updater`)
+- **Multiple fields per item**: Store related secrets as fields within the service item
+- **Consistent naming**: Item names match service names, field names use underscores
+- **Template consistency**: Always use `lookup('community.general.onepassword', 'service-name', field='field_name', vault=onepassword_vault)`
 
 ## Important Notes
 
