@@ -1,0 +1,26 @@
+# roles/services/ddns-updater/defaults/main.yml
+---
+# DDNS-Updater default configuration
+ddns_port: 8026
+ddns_period: "5m"
+ddns_cooldown_period: "5m"
+ddns_publicip_fetchers: "all"
+ddns_publicip_http_providers: "all"
+ddns_publicipv4_http_providers: "all"
+ddns_publicipv6_http_providers: "all"
+ddns_publicip_dns_providers: "all"
+ddns_dns_timeout: "3s"
+ddns_http_timeout: "10s"
+ddns_root_url: "/"
+ddns_backup_period: "0"
+ddns_log_level: "info"
+ddns_log_caller: "hidden"
+ddns_shoutrrr_addresses: ""
+
+# DDNS configurations - cleaner single-item approach
+ddns_configs:
+  - provider: "cloudflare"
+    ttl: 600
+    ip_version: "ipv4"
+    ipv6_suffix: ""
+    # Secrets are pulled from single 'ddns-updater' item in 1Password

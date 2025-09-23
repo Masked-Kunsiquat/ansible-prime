@@ -1,0 +1,32 @@
+# roles/services/ddns-updater/templates/compose.yaml.j2
+services:
+  ddns-updater:
+    image: qmcgaw/ddns-updater
+    container_name: ddns-updater
+    network_mode: bridge
+    ports:
+      - {{ ddns_port | default('8026') }}:8000/tcp
+    volumes:
+      - ./data:/updater/data
+    environment:
+      - CONFIG=
+      - PERIOD={{ ddns_period | default('5m') }}
+      - UPDATE_COOLDOWN_PERIOD={{ ddns_cooldown_period | default('5m') }}
+      - PUBLICIP_FETCHERS={{ ddns_publicip_fetchers | default('all') }}
+      - PUBLICIP_HTTP_PROVIDERS={{ ddns_publicip_http_providers | default('all') }}
+      - PUBLICIPV4_HTTP_PROVIDERS={{ ddns_publicipv4_http_providers | default('all') }}
+      - PUBLICIPV6_HTTP_PROVIDERS={{ ddns_publicipv6_http_providers | default('all') }}
+      - PUBLICIP_DNS_PROVIDERS={{ ddns_publicip_dns_providers | default('all') }}
+      - PUBLICIP_DNS_TIMEOUT={{ ddns_dns_timeout | default('3s') }}
+      - HTTP_TIMEOUT={{ ddns_http_timeout | default('10s') }}
+      # Web UI
+      - LISTENING_ADDRESS=:8000
+      - ROOT_URL={{ ddns_root_url | default('/') }}
+      # Backup
+      - BACKUP_PERIOD={{ ddns_backup_period | default('0') }} # 0 to disable
+      - BACKUP_DIRECTORY=/updater/data
+      # Other
+      - LOG_LEVEL={{ ddns_log_level | default('info') }}
+      - LOG_CALLER={{ ddns_log_caller | default('hidden') }}
+      - SHOUTRRR_ADDRESSES={{ ddns_shoutrrr_addresses | default('') }}
+    restart: always

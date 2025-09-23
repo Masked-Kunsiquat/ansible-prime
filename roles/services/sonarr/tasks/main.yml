@@ -1,0 +1,38 @@
+# roles/services/sonarr/tasks/main.yml
+---
+- name: Create sonarr directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ service_path }}"
+    - "{{ service_path }}/config"
+    - "{{ service_path }}/data"
+  vars:
+    service_path: "{{ docker_base_path | default('/docker') }}/sonarr"
+
+- name: Generate docker-compose.yml
+  template:
+    src: compose.yaml.j2
+    dest: "{{ service_path }}/compose.yaml"
+    mode: '0644'
+  vars:
+    service_path: "{{ docker_base_path | default('/docker') }}/sonarr"
+  notify: restart sonarr
+
+- name: Generate .env file
+  template:
+    src: .env.j2
+    dest: "{{ service_path }}/.env"
+    mode: '0600'
+  vars:
+    service_path: "{{ docker_base_path | default('/docker') }}/sonarr"
+  notify: restart sonarr
+
+- name: Start sonarr service
+  docker_compose:
+    project_src: "{{ service_path }}"
+    state: present
+  vars:
+    service_path: "{{ docker_base_path | default('/docker') }}/sonarr"

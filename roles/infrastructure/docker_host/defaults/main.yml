@@ -1,0 +1,4 @@
+# roles/infrastructure/docker_host/defaults/main.yml
+---
+docker_base_path: "/docker"
+docker_services: []

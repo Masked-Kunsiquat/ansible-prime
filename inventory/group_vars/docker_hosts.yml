@@ -1,0 +1,23 @@
+# inventory/group_vars/docker_hosts.yml
+---
+# Docker host configuration
+docker_base_path: "/docker"
+docker_compose_version: "2.20.0"
+
+# Standard docker directory structure
+docker_services:
+  - sonarr
+  - radarr
+  - nginx-proxy-manager
+
+# DDNS-Updater configuration
+ddns_configs:
+  - provider: "cloudflare"
+    ttl: 600
+    ip_version: "ipv4"
+    ipv6_suffix: ""
+  # For multiple domains, create additional 1Password items:
+  # - provider: "cloudflare"
+  #   item_name: "ddns-updater-domain2"  # different 1Password item
+  #   ttl: 300
+  #   ip_version: "ipv4"

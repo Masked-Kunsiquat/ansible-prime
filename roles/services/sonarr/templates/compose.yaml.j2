@@ -1,0 +1,24 @@
+# roles/services/sonarr/templates/compose.yaml.j2
+version: '3.8'
+
+services:
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ={{ timezone | default('UTC') }}
+    volumes:
+      - ./config:/config
+      - ./data:/data
+      {% if media_paths is defined -%}
+      {% for path in media_paths -%}
+      - {{ path.source }}:{{ path.dest }}
+      {% endfor -%}
+      {% endif -%}
+    ports:
+      - "8989:8989"
+    env_file:
+      - .env
