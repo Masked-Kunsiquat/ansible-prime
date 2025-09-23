@@ -4,7 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is an Ansible monorepo designed for **homelab disaster recovery**. The primary goal is to quickly spin up a complete homelab environment from scratch, focusing on Proxmox LXC provisioning and media server stack deployment. The repository emphasizes simplicity, idempotency, and 1Password CLI integration for secrets.
+This is a modular Ansible repository designed for **flexible homelab infrastructure management**. The primary goal is to provide composable, idempotent roles that can deploy services across different platforms (LXCs, Docker hosts, bare metal) based on service requirements and personal preferences.
+
+## Architecture Philosophy
+
+### Modular Design
+- **Composable roles**: Each role does one thing well and can be combined with others
+- **Platform flexibility**: Services can run in LXCs, Docker containers, or bare metal as appropriate
+- **True idempotency**: All playbooks can be run repeatedly without issues
+- **Predictable structure**: Consistent patterns across all deployments
+
+### Platform Strategy
+- **LXCs**: For services that benefit from isolation, easy backup, or small footprint
+- **Docker**: For services with good containerization support
+- **Bare metal**: For services that require direct hardware access
+- **Choice by service**: Platform selection based on service needs and preferences
 
 ## Development Commands
 
@@ -14,101 +28,169 @@ This is an Ansible monorepo designed for **homelab disaster recovery**. The prim
 pip install pre-commit
 pre-commit install
 
-# Lint Ansible playbooks
-ansible-lint playbooks/*.yml
+# Lint Ansible playbooks and roles
+ansible-lint roles/ playbooks/
 
-# Run Ansible playbook in check mode (dry run)
-ansible-playbook playbooks/main.yml --check
+# Test individual roles in check mode
+ansible-playbook -i inventory/hosts playbooks/test-role.yml --check --extra-vars "target_role=docker_host"
 
 # Run with verbose output for debugging
-ansible-playbook playbooks/main.yml -vv
+ansible-playbook -i inventory/hosts playbooks/main.yml -vv
 ```
 
-### Release Management
+### Role Testing
 ```bash
-# Generate new semantic release
-npx semantic-release
+# Test a specific role
+ansible-playbook -i inventory/hosts playbooks/deploy-service.yml --tags "sonarr" --check
+
+# Deploy single service
+ansible-playbook -i inventory/hosts playbooks/deploy-service.yml --extra-vars "service=nginx_proxy_manager platform=lxc"
 ```
 
 ## Repository Structure
 
-The repository follows a standard Ansible monorepo structure:
+```
+├── inventory/
+│   ├── hosts                    # Server inventory
+│   ├── group_vars/             # Group-specific variables
+│   └── host_vars/              # Host-specific variables
+├── roles/
+│   ├── infrastructure/         # Platform provisioning roles
+│   │   ├── proxmox_lxc/       # LXC provisioning
+│   │   ├── docker_host/       # Docker host setup
+│   │   └── common/            # Common OS configuration
+│   ├── services/              # Individual service roles
+│   │   ├── sonarr/           # Sonarr deployment (Docker)
+│   │   ├── nginx_proxy_manager/ # NPM deployment
+│   │   └── home_assistant/    # Home Assistant (LXC)
+├── playbooks/
+│   ├── main.yml              # Main orchestration playbook
+│   ├── deploy-service.yml    # Single service deployment
+│   └── provision-platform.yml # Platform provisioning
+├── templates/
+│   ├── docker/               # Docker compose templates
+│   └── systemd/              # Systemd service templates
+└── group_vars/
+    ├── docker_hosts.yml      # Docker host configuration
+    └── proxmox.yml          # Proxmox configuration
+```
 
-- `inventory/` - Inventory files with `hosts`, `group_vars/`, and `host_vars/`
-- `roles/` - Modular Ansible roles (each role should have standard subdirectories: `tasks/`, `handlers/`, `templates/`, `defaults/`, `vars/`, `meta/`, `files/`)
-- `playbooks/` - Playbooks that orchestrate roles, with `main.yml` as the primary entry point
-- `templates/` - Global Jinja2 templates
-- `scripts/` - Supporting automation scripts
-- `secrets/` - Managed via 1Password CLI (never commit actual secrets)
+## Role Architecture
 
-## Homelab Environment
+### Infrastructure Roles
+- **proxmox_lxc**: Creates and configures LXC containers
+- **docker_host**: Sets up Docker daemon and directory structure
+- **common**: Base OS configuration (users, packages, security)
 
-**Current Infrastructure:**
-- 1 Proxmox host with HomeAssistant VM and multiple LXCs
-- Separate PC running AdGuard Home
-- TerramasterNAS running TrueNAS Scale
+### Service Roles
+- Each service gets its own role (sonarr, radarr, nginx_proxy_manager, etc.)
+- Service roles are platform-agnostic where possible
+- Role determines deployment method based on `platform` variable
 
-**Target Recovery Stack:**
-- Proxmox LXC provisioning and configuration
-- Media server stack: Radarr, Sonarr, Bazarr, Notifiarr
-- Reverse proxy: Nginx Proxy Manager
-- HomeAssistant VM restoration
+### Role Interaction Pattern
+```yaml
+# Example: Deploy Sonarr in LXC
+- include_role: name=proxmox_lxc
+  vars:
+    lxc_name: sonarr
+    lxc_vmid: 201
+- include_role: name=sonarr
+  vars:
+    platform: lxc
+    target_host: "{{ lxc_name }}"
+```
 
-## Architecture and Key Patterns
+## Docker Structure Standards
 
-### Proxmox LXC Management
-- Use `proxmox_lxc` role for container provisioning
-- Standard LXC templates and configurations
-- Automated networking and storage setup
-- Container-specific resource allocation
+### Directory Layout
+```
+/docker/
+├── sonarr/
+│   ├── compose.yaml
+│   ├── .env
+│   └── data/
+├── radarr/
+│   ├── compose.yaml
+│   ├── .env
+│   └── data/
+└── nginx-proxy-manager/
+    ├── compose.yaml
+    ├── .env
+    └── data/
+```
 
-### Media Stack Deployment
-- Individual roles for each service: `radarr/`, `sonarr/`, `bazarr/`, `notifiarr/`
-- Docker-based deployments within LXCs
-- Shared storage mounts for media libraries
-- Consistent naming and configuration patterns
+### File Standards
+- **compose.yaml**: Docker Compose file (generated from Jinja template)
+- **.env**: Environment variables (generated from Jinja template, mode 0600)
+- **data/**: Service data directory
 
-### Secret Management
-- Uses 1Password CLI for all sensitive data
-- Secrets fetched via: `"{{ lookup('community.general.onepassword', 'secret-name') }}"`
-- Environment files generated from templates (never committed)
-- File permissions set to '0600' for sensitive configs
+## Secret Management with 1Password
 
-### Role Development
-- Keep roles simple and focused on single services
-- Follow standard Ansible role structure
-- Use descriptive names matching service names
-- Include proper error handling and validation
+### Organization Structure
+- **Vault**: "HomeLab" (dedicated vault for homelab secrets)
+- **Naming Convention**: `{SERVICE}_{PURPOSE}` (e.g., SONARR_API_KEY, SONARR_DB_PASS)
+- **Lookup Pattern**: `"{{ lookup('community.general.onepassword', 'SECRET_NAME', vault='HomeLab') }}"`
 
-## Code Standards
+### Template Integration
+```yaml
+# In Jinja templates
+SONARR_API_KEY={{ lookup('community.general.onepassword', 'SONARR_API_KEY', vault='HomeLab') }}
+DB_PASSWORD={{ lookup('community.general.onepassword', 'SONARR_DB_PASS', vault='HomeLab') }}
+```
 
-### YAML Formatting
-- Pre-commit hooks enforce YAML linting, trailing whitespace removal, and end-of-file fixing
-- All playbooks must pass `ansible-lint` before merging
-- Use consistent indentation and follow YAML best practices
+## Service Deployment Patterns
 
-### Naming Conventions
-- Playbooks: `deploy_mediastack.yml`, `provision_lxcs.yml` (action-based names)
-- Roles: `proxmox_lxc/`, `radarr/`, `sonarr/`, `nginx_proxy_manager/` (service names)
-- Variables: `radarr_api_key`, `lxc_memory_size` (snake_case with service prefix)
+### Docker Service Role Structure
+```
+roles/sonarr/
+├── tasks/main.yml           # Main deployment logic
+├── templates/
+│   ├── compose.yaml.j2      # Docker compose template
+│   └── .env.j2             # Environment template
+├── defaults/main.yml        # Default variables
+└── vars/main.yml           # Service-specific variables
+```
 
-### CI/CD Integration
-- GitHub Actions automatically run `ansible-lint` on all playbooks
-- All PRs must pass CI/CD checks before merging
-- Use semantic commit messages: `<type>(<scope>): <description>`
+### LXC Service Deployment
+```yaml
+- name: Create LXC for service
+  include_role:
+    name: proxmox_lxc
+  vars:
+    lxc_name: "{{ service_name }}"
+    lxc_vmid: "{{ service_vmid }}"
+
+- name: Deploy service in LXC
+  include_role:
+    name: "{{ service_name }}"
+  vars:
+    platform: lxc
+    ansible_host: "{{ lxc_ip }}"
+```
+
+## Key Principles
+
+### Idempotency
+- All roles must be safe to run multiple times
+- Use `creates` parameter for one-time operations
+- Check service state before making changes
+
+### Modularity
+- Each role has a single responsibility
+- Roles communicate through well-defined variables
+- Platform-specific logic contained within roles
+
+### Flexibility
+- Service roles work across platforms (LXC, Docker, bare metal)
+- Configuration driven by variables and templates
+- Easy to add new services or platforms
 
 ## Important Notes
 
-- **Test first**: Always run playbooks in check mode (`--check`) before executing on Proxmox
-- **LXC safety**: Verify LXC doesn't exist before provisioning to avoid conflicts
-- **Storage mounts**: Ensure NFS/SMB shares from TrueNAS are accessible before media stack deployment
-- **Network configuration**: Verify Proxmox bridge and VLAN settings match expected network layout
-- **Service dependencies**: Deploy Nginx Proxy Manager before other services that need reverse proxy
-- **1Password integration**: Never hardcode API keys, passwords, or tokens - use 1Password CLI lookups
-- **Backup configurations**: Store LXC templates and service configurations for easy restoration
-
-## Documentation References
-
-- See `CODE_STANDARDS.md` for detailed coding standards
-- See `CONTRIBUTING.md` for PR and contribution guidelines
-- See `CHANGELOG.md` for version history and release notes
+- **Test first**: Always use `--check` mode for new deployments
+- **One service per role**: Keep roles focused on single services
+- **Template everything**: Use Jinja2 for all configuration files
+- **Secret security**: Never hardcode secrets, always use 1Password lookups
+- **Directory standards**: Follow `/docker/{service}/compose.yaml` pattern
+- **File permissions**: Set `.env` files to mode 0600
+- **Platform choice**: Choose platform based on service needs, not convenience
