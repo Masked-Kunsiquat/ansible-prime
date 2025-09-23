@@ -1,0 +1,9 @@
+# inventory/hosts
+[proxmox]
+pve ansible_host=YOUR_PROXMOX_IP ansible_user=root
+
+[docker_hosts]
+docker-01 ansible_host=YOUR_DOCKER_HOST_IP ansible_user=YOUR_USER
+
+[lxc_containers]
+# This group will be populated dynamically by LXC creation

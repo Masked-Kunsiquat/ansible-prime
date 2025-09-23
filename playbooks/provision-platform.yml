@@ -1,0 +1,28 @@
+# playbooks/provision-platform.yml
+---
+- name: Provision Infrastructure Platforms
+  hosts: "{{ target_hosts | default('localhost') }}"
+  gather_facts: true
+  vars:
+    platform: "{{ platform | default('docker') }}"
+    service: "{{ service | default('') }}"
+    
+  tasks:
+    - name: Provision LXC container
+      include_role:
+        name: infrastructure/proxmox_lxc
+      when: platform == "lxc"
+      vars:
+        lxc_name: "{{ service }}"
+        lxc_vmid: "{{ service_configs[service].vmid | default(200) }}"
+        lxc_memory: "{{ service_configs[service].memory | default(1024) }}"
+        lxc_cores: "{{ service_configs[service].cores | default(1) }}"
+      
+    - name: Setup Docker host
+      include_role:
+        name: infrastructure/docker_host
+      when: platform == "docker"
+      
+    - name: Apply common configuration
+      include_role:
+        name: infrastructure/common

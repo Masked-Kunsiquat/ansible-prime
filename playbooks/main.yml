@@ -1,0 +1,23 @@
+# playbooks/main.yml
+---
+- name: Homelab Infrastructure Management
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Display available operations
+      debug:
+        msg: |
+          Available operations:
+          - provision-platform: Create LXCs or setup Docker hosts
+          - deploy-service: Deploy individual services
+          - validate-deployment: Check service health
+          
+          Usage examples:
+          ansible-playbook main.yml --tags "provision" --extra-vars "platform=lxc service=sonarr"
+          ansible-playbook main.yml --tags "deploy" --extra-vars "service=sonarr platform=docker"
+
+- import_playbook: provision-platform.yml
+  tags: provision
+  
+- import_playbook: deploy-service.yml
+  tags: deploy

@@ -1,0 +1,11 @@
+# inventory/group_vars/docker_hosts.yml
+---
+# Docker host configuration
+docker_base_path: "/docker"
+docker_compose_version: "2.20.0"
+
+# Standard docker directory structure
+docker_services:
+  - sonarr
+  - radarr
+  - nginx-proxy-manager

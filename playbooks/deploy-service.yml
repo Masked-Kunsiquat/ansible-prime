@@ -1,0 +1,26 @@
+# playbooks/deploy-service.yml
+---
+- name: Deploy Individual Service
+  hosts: "{{ target_hosts | default('docker_hosts') }}"
+  gather_facts: true
+  vars:
+    service: "{{ service | mandatory }}"
+    platform: "{{ platform | default('docker') }}"
+    
+  pre_tasks:
+    - name: Validate service is supported
+      fail:
+        msg: "Service {{ service }} is not supported"
+      when: service not in supported_services
+      vars:
+        supported_services:
+          - sonarr
+          - radarr
+          - nginx_proxy_manager
+          
+  tasks:
+    - name: Deploy service
+      include_role:
+        name: "services/{{ service }}"
+      vars:
+        deployment_platform: "{{ platform }}"

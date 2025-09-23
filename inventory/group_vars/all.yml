@@ -1,0 +1,13 @@
+# inventory/group_vars/all.yml
+---
+# Global settings
+timezone: "America/New_York"
+onepassword_vault: "HomeLab"
+
+# Common packages for all systems
+common_packages:
+  - curl
+  - wget
+  - htop
+  - nano
+  - python3-pip

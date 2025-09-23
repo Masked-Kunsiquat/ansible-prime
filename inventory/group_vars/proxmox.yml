@@ -1,0 +1,15 @@
+# inventory/group_vars/proxmox.yml
+---
+# Proxmox connection details
+proxmox_api_host: "{{ ansible_host }}"
+proxmox_api_user: "root@pam"
+proxmox_node: "pve"
+
+# Default LXC settings
+lxc_defaults:
+  template: "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  memory: 1024
+  swap: 512
+  disk: 8
+  cores: 1
+  bridge: "vmbr0"

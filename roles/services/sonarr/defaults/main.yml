@@ -1,0 +1,5 @@
+# roles/services/sonarr/defaults/main.yml
+---
+sonarr_log_level: "info"
+use_external_db: false
+media_paths: []

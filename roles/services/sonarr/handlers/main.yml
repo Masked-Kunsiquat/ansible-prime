@@ -1,0 +1,6 @@
+# roles/services/sonarr/handlers/main.yml
+---
+- name: restart sonarr
+  docker_compose:
+    project_src: "{{ docker_base_path | default('/docker') }}/sonarr"
+    restart: yes
