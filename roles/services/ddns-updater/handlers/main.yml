@@ -1,0 +1,6 @@
+# roles/services/ddns-updater/handlers/main.yml
+---
+- name: restart ddns-updater
+  docker_compose:
+    project_src: "{{ docker_base_path | default('/docker') }}/ddns-updater"
+    restart: yes

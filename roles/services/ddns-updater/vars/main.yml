@@ -1,0 +1,5 @@
+# roles/services/ddns-updater/vars/main.yml
+---
+# Service-specific variables (can override defaults)
+service_name: "ddns-updater"
+service_port: 8026
