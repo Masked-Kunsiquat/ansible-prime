@@ -17,12 +17,10 @@ ddns_log_level: "info"
 ddns_log_caller: "hidden"
 ddns_shoutrrr_addresses: ""
 
-# DDNS configurations - override in group_vars or host_vars
+# DDNS configurations - cleaner single-item approach
 ddns_configs:
   - provider: "cloudflare"
-    zone_identifier_secret: "DDNS_CLOUDFLARE_ZONE_ID"
-    domain_secret: "DDNS_CLOUDFLARE_DOMAIN"
-    token_secret: "DDNS_CLOUDFLARE_TOKEN"
     ttl: 600
     ip_version: "ipv4"
     ipv6_suffix: ""
+    # Secrets are pulled from single 'ddns-updater' item in 1Password

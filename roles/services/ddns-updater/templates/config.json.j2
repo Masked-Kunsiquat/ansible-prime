@@ -3,10 +3,10 @@
 {% for config in ddns_configs %}
     {
       "provider": "{{ config.provider }}",
-      "zone_identifier": "{{ lookup('community.general.onepassword', config.zone_identifier_secret, vault=onepassword_vault) }}",
-      "domain": "{{ lookup('community.general.onepassword', config.domain_secret, vault=onepassword_vault) }}",
+      "zone_identifier": "{{ lookup('community.general.onepassword', config.item_name | default('ddns-updater'), field='zone_id', vault=onepassword_vault) }}",
+      "domain": "{{ lookup('community.general.onepassword', config.item_name | default('ddns-updater'), field='domain', vault=onepassword_vault) }}",
       "ttl": {{ config.ttl | default(600) }},
-      "token": "{{ lookup('community.general.onepassword', config.token_secret, vault=onepassword_vault) }}",
+      "token": "{{ lookup('community.general.onepassword', config.item_name | default('ddns-updater'), field='token', vault=onepassword_vault) }}",
       "ip_version": "{{ config.ip_version | default('ipv4') }}",
       "ipv6_suffix": "{{ config.ipv6_suffix | default('') }}"
     }{% if not loop.last %},{% endif %}

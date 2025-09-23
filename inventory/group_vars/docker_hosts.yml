@@ -13,16 +13,11 @@ docker_services:
 # DDNS-Updater configuration
 ddns_configs:
   - provider: "cloudflare"
-    zone_identifier_secret: "DDNS_CLOUDFLARE_ZONE_ID"
-    domain_secret: "DDNS_CLOUDFLARE_DOMAIN" 
-    token_secret: "DDNS_CLOUDFLARE_TOKEN"
     ttl: 600
     ip_version: "ipv4"
     ipv6_suffix: ""
-  # Add more configs if you have multiple domains/providers
+  # For multiple domains, create additional 1Password items:
   # - provider: "cloudflare"
-  #   zone_identifier_secret: "DDNS_CLOUDFLARE_ZONE_ID_2"
-  #   domain_secret: "DDNS_CLOUDFLARE_DOMAIN_2"
-  #   token_secret: "DDNS_CLOUDFLARE_TOKEN_2"
+  #   item_name: "ddns-updater-domain2"  # different 1Password item
   #   ttl: 300
   #   ip_version: "ipv4"
