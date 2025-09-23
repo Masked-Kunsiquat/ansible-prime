@@ -1,0 +1,24 @@
+# roles/services/radarr/templates/compose.yaml.j2
+version: '3.8'
+
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ={{ timezone | default('UTC') }}
+    volumes:
+      - ./config:/config
+      - ./data:/data
+      {% if media_paths is defined -%}
+      {% for path in media_paths -%}
+      - {{ path.source }}:{{ path.dest }}
+      {% endfor -%}
+      {% endif -%}
+    ports:
+      - "7878:7878"
+    env_file:
+      - .env
